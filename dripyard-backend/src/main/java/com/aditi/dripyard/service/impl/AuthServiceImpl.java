@@ -143,6 +143,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse signing(LoginRequest req) {
+
+        String username = 
+
         return null;
     }
 }
