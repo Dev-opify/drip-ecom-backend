@@ -16,11 +16,13 @@ import com.aditi.dripyard.service.EmailService;
 import com.aditi.dripyard.utils.OtpUtil;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,8 @@ public class AuthServiceImpl implements AuthService {
     private final VerificationCodeRepository verificationCodeRepository;
 
     private final EmailService emailService;
+
+    private final CustomUserServiceImpl customUserService;
 
 
     @Override
@@ -173,7 +177,24 @@ public class AuthServiceImpl implements AuthService {
 
     private Authentication authenticate(String username, String otp) {
 
-        return null;
+        UserDetails  userDetails=   customUserService.loadUserByUsername(username);
+
+        if(userDetails == null){
+            throw new BadCredentialsException("Invalid username");
+
+
+        }
+
+        VerificationCode verificationCode = verificationCodeRepository.findByEmail(username);
+
+        if(verificationCode == null || !verificationCode.getOtp().equals(otp) ){
+            throw new BadCredentialsException("Wrong OTP");
+        }
+
+
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+
 
     }
 }

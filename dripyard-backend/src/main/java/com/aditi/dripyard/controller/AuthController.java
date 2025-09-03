@@ -5,6 +5,7 @@ import com.aditi.dripyard.domain.USER_ROLE;
 import com.aditi.dripyard.model.User;
 import com.aditi.dripyard.model.VerificationCode;
 import com.aditi.dripyard.repository.UserRepository;
+import com.aditi.dripyard.request.LoginRequest;
 import com.aditi.dripyard.response.ApiResponse;
 import com.aditi.dripyard.response.AuthResponse;
 import com.aditi.dripyard.response.SignupRequest;
@@ -24,7 +25,6 @@ public class AuthController {
     private final UserRepository userRepository;
     private final AuthService authService;
 
-    // dripyard-backend/src/main/java/com/aditi/dripyard/controller/AuthController.java
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> signup(@RequestBody SignupRequest req) throws Exception {
         String jwt = authService.createUser(req);
@@ -35,19 +35,17 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping ("/sent/login-signup-otp")
-    public ResponseEntity<ApiResponse>  sentOtpHandler(@RequestBody VerificationCode req ) throws Exception {
-
-
-
-         authService.sentLoginOtp(req.getEmail());
-
+    @PostMapping("/sent/login-signup-otp")
+    public ResponseEntity<ApiResponse> sentOtpHandler(@RequestBody VerificationCode req) throws Exception {
+        authService.sentLoginOtp(req.getEmail());
         ApiResponse res = new ApiResponse();
-
         res.setMessage("Otp sent successfully ");
-
-
         return ResponseEntity.ok(res);
+    }
 
+    @PostMapping("/signing")
+    public ResponseEntity<AuthResponse> loginHandler(@RequestBody LoginRequest req) throws Exception {
+        AuthResponse authResponse = authService.signing(req);
+        return ResponseEntity.ok(authResponse);
     }
 }

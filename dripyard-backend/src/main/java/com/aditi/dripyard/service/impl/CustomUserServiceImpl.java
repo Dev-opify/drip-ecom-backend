@@ -56,15 +56,15 @@ public class CustomUserServiceImpl implements UserDetailsService {
           throw new UsernameNotFoundException("User not found with email: " + username);
     }
 
+    // dripyard-backend/src/main/java/com/aditi/dripyard/service/impl/CustomUserServiceImpl.java
     private UserDetails buildUserDetails(String email, String password, USER_ROLE role) {
-
-        if(role==null) role= USER_ROLE.ROLE_CUSTOMER;
+        if (role == null) role = USER_ROLE.ROLE_CUSTOMER;
+        if (email == null || email.isEmpty()) throw new IllegalArgumentException("Email cannot be null or empty");
+        if (password == null || password.isEmpty()) password = "default_password"; // Set a default password
 
         List<GrantedAuthority> authorityList = new ArrayList<>();
+        authorityList.add(new SimpleGrantedAuthority(role.toString()));
 
-
-        authorityList.add( new SimpleGrantedAuthority( "ROLE_"+role));
-
-        return new org.springframework.security.core.userdetails.User(email,password,authorityList);
+        return new org.springframework.security.core.userdetails.User(email, password, authorityList);
     }
 }
