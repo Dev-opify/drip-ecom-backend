@@ -26,13 +26,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> signup(@RequestBody SignupRequest req) throws Exception {
+    public ResponseEntity<AuthResponse> createUserHandler (@RequestBody SignupRequest req) throws Exception {
         String jwt = authService.createUser(req);
-        AuthResponse response = new AuthResponse();
-        response.setJwt(jwt);
-        response.setMessage("Signup successful");
-        response.setRole(USER_ROLE.ROLE_CUSTOMER);
-        return ResponseEntity.ok(response);
+        AuthResponse res = new AuthResponse();
+        res.setJwt(jwt);
+        res.setMessage("Signup successful");
+        res.setRole(USER_ROLE.ROLE_CUSTOMER);
+        return ResponseEntity.ok(res);
     }
 
     @PostMapping("/sent/login-signup-otp")
