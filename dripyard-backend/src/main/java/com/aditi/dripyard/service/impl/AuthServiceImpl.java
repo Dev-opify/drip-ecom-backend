@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -144,8 +145,35 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse signing(LoginRequest req) {
 
-        String username = 
+        String username =  req.getEmail();
+        String otp = req.getOtp();
+
+
+
+        Authentication authentication = authenticate(username, otp );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String token = jwtProvider.generateToken(authentication);
+
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setJwt(token);
+        authResponse.setMessage("Login success");
+
+        Collection<?extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+        String roleName = authorities.isEmpty()?null:authorities.iterator().next().getAuthority();
+
+        authResponse.setRole(USER_ROLE.valueOf(roleName));
+
+        return authResponse;
+
+
+    }
+
+    private Authentication authenticate(String username, String otp) {
 
         return null;
+
     }
 }
