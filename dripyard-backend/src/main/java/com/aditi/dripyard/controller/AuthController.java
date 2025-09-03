@@ -1,9 +1,14 @@
 package com.aditi.dripyard.controller;
 
 
+import com.aditi.dripyard.domain.USER_ROLE;
 import com.aditi.dripyard.model.User;
+import com.aditi.dripyard.model.VerificationCode;
 import com.aditi.dripyard.repository.UserRepository;
+import com.aditi.dripyard.response.ApiResponse;
+import com.aditi.dripyard.response.AuthResponse;
 import com.aditi.dripyard.response.SignupRequest;
+import com.aditi.dripyard.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,18 +22,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserRepository userRepository;
+    private final AuthService authService;
 
 
-    @PostMapping ("/signup")
-    public ResponseEntity<User>  createUserHandler(@RequestBody SignupRequest req){
 
-        User user = new User();
-        user.setEmail(req.getEmail());
-        user.setFullName(req.getFullName());
-
-        User savedUser = userRepository.save(user);
+    @PostMapping ("/sent/login-signup-otp")
+    public ResponseEntity<ApiResponse>  sentOtpHandler(@RequestBody VerificationCode req ) throws Exception {
 
 
-        return ResponseEntity.ok(savedUser);
+
+         authService.sentLoginOtp(req.getEmail());
+
+        ApiResponse res = new ApiResponse();
+
+        res.setMessage("Otp sent successfully ");
+
+
+        return ResponseEntity.ok(res);
+
     }
 }
