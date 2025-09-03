@@ -8,6 +8,8 @@ import com.aditi.dripyard.model.VerificationCode;
 import com.aditi.dripyard.repository.CartRepository;
 import com.aditi.dripyard.repository.UserRepository;
 import com.aditi.dripyard.repository.VerificationCodeRepository;
+import com.aditi.dripyard.request.LoginRequest;
+import com.aditi.dripyard.response.AuthResponse;
 import com.aditi.dripyard.response.SignupRequest;
 import com.aditi.dripyard.service.AuthService;
 import com.aditi.dripyard.service.EmailService;
@@ -137,5 +139,10 @@ public class AuthServiceImpl implements AuthService {
 
 
         return jwtProvider.generateToken(authentication);
+    }
+
+    @Override
+    public AuthResponse signing(LoginRequest req) {
+        return null;
     }
 }

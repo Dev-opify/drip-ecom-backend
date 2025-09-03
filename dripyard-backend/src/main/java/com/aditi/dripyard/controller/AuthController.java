@@ -24,7 +24,16 @@ public class AuthController {
     private final UserRepository userRepository;
     private final AuthService authService;
 
-
+    // dripyard-backend/src/main/java/com/aditi/dripyard/controller/AuthController.java
+    @PostMapping("/signup")
+    public ResponseEntity<AuthResponse> signup(@RequestBody SignupRequest req) throws Exception {
+        String jwt = authService.createUser(req);
+        AuthResponse response = new AuthResponse();
+        response.setJwt(jwt);
+        response.setMessage("Signup successful");
+        response.setRole(USER_ROLE.ROLE_CUSTOMER);
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping ("/sent/login-signup-otp")
     public ResponseEntity<ApiResponse>  sentOtpHandler(@RequestBody VerificationCode req ) throws Exception {

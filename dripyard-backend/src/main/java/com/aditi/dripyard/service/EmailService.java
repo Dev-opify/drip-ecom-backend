@@ -34,7 +34,7 @@ public class EmailService {
 
 
         } catch(MailException e){
-            
+
             System.out.println("errorrrr-- "+ e);
             throw new MailSendException("failed to send email");
 
