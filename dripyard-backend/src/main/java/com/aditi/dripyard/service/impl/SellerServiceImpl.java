@@ -1,50 +1,46 @@
 package com.aditi.dripyard.service.impl;
 
-import com.aditi.dripyard.config.JwtProvider;
-import com.aditi.dripyard.domain.AccountStatus;
-import com.aditi.dripyard.domain.USER_ROLE;
-import com.aditi.dripyard.model.Address;
-import com.aditi.dripyard.model.Seller;
-import com.aditi.dripyard.repository.AddressRepository;
-import com.aditi.dripyard.repository.SellerRepository;
-import com.aditi.dripyard.service.SellerService;
+import com.zosh.config.JwtProvider;
+import com.zosh.domain.AccountStatus;
+import com.zosh.domain.USER_ROLE;
+import com.zosh.exception.SellerException;
+import com.zosh.model.Address;
+import com.zosh.model.Seller;
+import com.zosh.repository.AddressRepository;
+import com.zosh.repository.SellerRepository;
+import com.zosh.service.SellerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-
 public class SellerServiceImpl implements SellerService {
 
     private final SellerRepository sellerRepository;
-
-    private final JwtProvider jwtProvider;
-
-    private final PasswordEncoder passwordEncoder;
-
     private final AddressRepository addressRepository;
-
-
+    private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
 
 
     @Override
-    public Seller getSellerProfile(String jwt) throws Exception {
-        String email= jwtProvider.getEmailFromJwtToken(jwt);
-
+    public Seller getSellerProfile(String jwt) throws SellerException {
+        String email = jwtProvider.getEmailFromJwtToken(jwt);
         return this.getSellerByEmail(email);
     }
 
     @Override
-    public Seller createSeller(Seller seller) throws Exception {
-        Seller sellerExist= sellerRepository.findByEmail(seller.getEmail());
-        if(sellerExist!= null) {
-            throw new Exception("seller already exists, use different email");
+    public Seller createSeller(Seller seller) throws SellerException {
+        Seller sellerExist = sellerRepository.findByEmail(seller.getEmail());
+        if (sellerExist != null) {
+            throw new SellerException("Seller already exists used different email");
         }
+
         Address savedAddress = addressRepository.save(seller.getPickupAddress());
+
 
         Seller newSeller = new Seller();
         newSeller.setEmail(seller.getEmail());
@@ -63,21 +59,21 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public Seller getSellerById(Long id) throws Exception {
-        return sellerRepository.findById(id).orElseThrow(()-> new Exception( "seller not found" + id));
-      //
-
+    public Seller getSellerById(Long id) throws SellerException {
+        Optional<Seller> optionalSeller = sellerRepository.findById(id);
+        if (optionalSeller.isPresent()) {
+            return optionalSeller.get();
+        }
+        throw new SellerException("Seller not found");
     }
 
     @Override
-    public Seller getSellerByEmail(String email) throws Exception {
+    public Seller getSellerByEmail(String email) throws SellerException {
         Seller seller = sellerRepository.findByEmail(email);
-        if(seller == null) {
-
-            throw new Exception("seller not found");
-
+        if (seller != null) {
+            return seller;
         }
-        return seller;
+        throw new SellerException("Seller not found");
     }
 
     @Override
@@ -86,8 +82,10 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public Seller updateSeller(Long id, Seller seller) throws Exception {
-        Seller existingSeller = this.getSellerById(id);
+    public Seller updateSeller(Long id, Seller seller) throws SellerException {
+        Seller existingSeller = sellerRepository.findById(id)
+                .orElseThrow(() ->
+                        new SellerException("Seller not found with id " + id));
 
 
         if (seller.getSellerName() != null) {
@@ -146,24 +144,27 @@ public class SellerServiceImpl implements SellerService {
         return sellerRepository.save(existingSeller);
 
     }
+
     @Override
-    public void deleteSeller(Long id) throws Exception {
-     Seller seller = getSellerById(id);
-        sellerRepository.delete(seller);
+    public void deleteSeller(Long id) throws SellerException {
+        if (sellerRepository.existsById(id)) {
+            sellerRepository.deleteById(id);
+        } else {
+            throw new SellerException("Seller not found with id " + id);
+        }
     }
 
     @Override
-    public Seller verifyEmail(String email, String otp) {
-        Seller seller = sellerRepository.findByEmail(email);
+    public Seller verifyEmail(String email, String otp) throws SellerException {
+        Seller seller = this.getSellerByEmail(email);
         seller.setEmailVerified(true);
         return sellerRepository.save(seller);
     }
 
     @Override
-    public Seller updateSellerAccountStatus(Long sellerId, AccountStatus status) throws Exception {
-        Seller seller = getSellerById(sellerId);
+    public Seller updateSellerAccountStatus(Long sellerId, AccountStatus status) throws SellerException {
+        Seller seller = this.getSellerById(sellerId);
         seller.setAccountStatus(status);
         return sellerRepository.save(seller);
-
     }
 }

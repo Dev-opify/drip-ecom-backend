@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class SellerReports {
+public class SellerReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

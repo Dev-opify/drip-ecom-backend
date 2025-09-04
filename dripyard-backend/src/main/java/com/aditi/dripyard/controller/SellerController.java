@@ -3,6 +3,7 @@ package com.aditi.dripyard.controller;
 import com.aditi.dripyard.model.VerificationCode;
 import com.aditi.dripyard.repository.VerificationCodeRepository;
 import com.aditi.dripyard.request.LoginRequest;
+import com.aditi.dripyard.response.ApiResponse;
 import com.aditi.dripyard.response.AuthResponse;
 import com.aditi.dripyard.service.AuthService;
 import com.aditi.dripyard.service.SellerService;
@@ -22,6 +23,15 @@ public class SellerController {
     private final SellerService sellerService;
     private final VerificationCodeRepository verificationCodeRepository;
     private final AuthService authService;
+
+
+    @PostMapping("/sent/login-otp")
+    public ResponseEntity<ApiResponse> sentOtpHandler(@RequestBody VerificationCode req) throws Exception {
+        authService.sentLoginOtp(req.getEmail());
+        ApiResponse res = new ApiResponse();
+        res.setMessage("Otp sent successfully ");
+        return ResponseEntity.ok(res);
+    }
 
 
     @PostMapping( "/login")

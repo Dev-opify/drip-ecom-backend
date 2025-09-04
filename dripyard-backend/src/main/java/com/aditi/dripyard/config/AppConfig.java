@@ -1,10 +1,13 @@
 package com.aditi.dripyard.config;
 
-import jakarta.servlet.http.HttpServletRequest;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,59 +17,55 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.util.Collections;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity
 public class AppConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/**").authenticated()
-                        .requestMatchers("/api/products/*/reviews").permitAll()
-                        .anyRequest().permitAll()
-                ).addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(Authorize -> Authorize
+//                		.requestMatchers("/api/admin/**").hasAnyRole("SHOP_OWNER","ADMIN")
+                                .requestMatchers("/api/**").authenticated()
+                                .requestMatchers("/api/products/*/reviews").permitAll()
+                                .anyRequest().permitAll()
+                )
+                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
+
         return http.build();
+
     }
 
+    // CORS Configuration
     private CorsConfigurationSource corsConfigurationSource() {
-
-
         return new CorsConfigurationSource() {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-
                 CorsConfiguration cfg = new CorsConfiguration();
-                cfg.setAllowedOrigins(Collections.singletonList("*"));
+                cfg.setAllowedOrigins(Arrays.asList("dripyard.com ",
+                        "http://localhost:3000 "));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
-                cfg.setAllowedHeaders(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
-                cfg.setExposedHeaders(Collections.singletonList("Authorization"));
+                cfg.setAllowedHeaders(Collections.singletonList("*"));
+                cfg.setExposedHeaders(Arrays.asList("Authorization"));
                 cfg.setMaxAge(3600L);
                 return cfg;
-
-
-
             }
         };
     }
 
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-
-
     }
+
     @Bean
-    public RestTemplate restTemplate (){
-
-        return new RestTemplate();
-
+    public RestTemplate restTemplate() {
+        return new RestTemplate(); }
     }
-}
