@@ -2,6 +2,8 @@ package com.aditi.dripyard.controller;
 
 
 import com.aditi.dripyard.domain.USER_ROLE;
+import com.aditi.dripyard.exception.SellerException;
+import com.aditi.dripyard.exception.UserException;
 import com.aditi.dripyard.model.User;
 import com.aditi.dripyard.model.VerificationCode;
 import com.aditi.dripyard.repository.UserRepository;
@@ -10,7 +12,10 @@ import com.aditi.dripyard.response.ApiResponse;
 import com.aditi.dripyard.response.AuthResponse;
 import com.aditi.dripyard.response.SignupRequest;
 import com.aditi.dripyard.service.AuthService;
+import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,30 +27,45 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserRepository userRepository;
     private final AuthService authService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> createUserHandler (@RequestBody SignupRequest req) throws Exception {
-        String jwt = authService.createUser(req);
-        AuthResponse res = new AuthResponse();
-        res.setJwt(jwt);
-        res.setMessage("Signup successful");
-        res.setRole(USER_ROLE.ROLE_CUSTOMER);
-        return ResponseEntity.ok(res);
-    }
 
     @PostMapping("/sent/login-signup-otp")
-    public ResponseEntity<ApiResponse> sentOtpHandler(@RequestBody VerificationCode req) throws Exception {
+    public ResponseEntity<ApiResponse> sentLoginOtp(
+            @RequestBody VerificationCode req) throws MessagingException, UserException {
+
         authService.sentLoginOtp(req.getEmail());
+
         ApiResponse res = new ApiResponse();
-        res.setMessage("Otp sent successfully ");
-        return ResponseEntity.ok(res);
+        res.setMessage("otp sent");
+        return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
 
-    @PostMapping("/signing")
-    public ResponseEntity<AuthResponse> loginHandler(@RequestBody LoginRequest req) throws Exception {
-        AuthResponse authResponse = authService.signing(req);
-        return ResponseEntity.ok(authResponse);
+    @PostMapping("/signup")
+    public ResponseEntity<AuthResponse> createUserHandler(
+            @Valid
+            @RequestBody SignupRequest req)
+            throws SellerException {
+
+
+        String token = authService.createUser(req);
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setJwt(token);
+        authResponse.setMessage("Register Success");
+        authResponse.setRole(USER_ROLE.ROLE_CUSTOMER);
+
+        return new ResponseEntity<>(authResponse, HttpStatus.OK);
+
     }
+
+    @PostMapping("/signin")
+    public ResponseEntity<AuthResponse> signin(@RequestBody LoginRequest loginRequest) throws SellerException {
+
+        AuthResponse authResponse = authService.signin(loginRequest);
+        return new ResponseEntity<>(authResponse, HttpStatus.OK);
+    }
+
+
+
+
 }

@@ -1,16 +1,16 @@
 package com.aditi.dripyard.controller;
 
-import com.zosh.exception.ProductException;
-import com.zosh.exception.ReviewNotFoundException;
-import com.zosh.exception.UserException;
-import com.zosh.model.Product;
-import com.zosh.model.Review;
-import com.zosh.model.User;
-import com.zosh.request.CreateReviewRequest;
-import com.zosh.response.ApiResponse;
-import com.zosh.service.ProductService;
-import com.zosh.service.ReviewService;
-import com.zosh.service.UserService;
+
+import com.aditi.dripyard.exception.ProductException;
+import com.aditi.dripyard.exception.ReviewNotFoundException;
+import com.aditi.dripyard.exception.UserException;
+import com.aditi.dripyard.model.Product;
+import com.aditi.dripyard.model.Review;
+import com.aditi.dripyard.request.CreateReviewRequest;
+import com.aditi.dripyard.response.ApiResponse;
+import com.aditi.dripyard.service.ProductService;
+import com.aditi.dripyard.service.ReviewService;
+import com.aditi.dripyard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

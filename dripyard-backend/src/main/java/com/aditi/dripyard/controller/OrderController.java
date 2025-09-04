@@ -1,16 +1,13 @@
 package com.aditi.dripyard.controller;
 
-import com.razorpay.PaymentLink;
-import com.razorpay.RazorpayException;
-import com.stripe.exception.StripeException;
-import com.zosh.domain.PaymentMethod;
-import com.zosh.exception.OrderException;
-import com.zosh.exception.SellerException;
-import com.zosh.exception.UserException;
-import com.zosh.model.*;
-import com.zosh.repository.PaymentOrderRepository;
-import com.zosh.response.PaymentLinkResponse;
-import com.zosh.service.*;
+import com.aditi.dripyard.domain.PaymentMethod;
+import com.aditi.dripyard.exception.OrderException;
+import com.aditi.dripyard.exception.SellerException;
+import com.aditi.dripyard.exception.UserException;
+import com.aditi.dripyard.model.*;
+import com.aditi.dripyard.repository.PaymentOrderRepository;
+import com.aditi.dripyard.response.PaymentLinkResponse;
+import com.aditi.dripyard.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +20,7 @@ import java.util.Set;
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController {
-	
+
 	private final OrderService orderService;
 	private final UserService userService;
 	private final OrderItemService orderItemService;
@@ -33,14 +30,14 @@ public class OrderController {
 	private final SellerReportService sellerReportService;
 	private final SellerService sellerService;
 
-	
+
 	@PostMapping()
 	public ResponseEntity<PaymentLinkResponse> createOrderHandler(
 			@RequestBody Address spippingAddress,
 			@RequestParam PaymentMethod paymentMethod,
 			@RequestHeader("Authorization")String jwt)
-            throws UserException, RazorpayException, StripeException {
-		
+			throws UserException, RazorpayException, StripeException {
+
 		User user=userService.findUserProfileByJwt(jwt);
 		Cart cart=cartService.findUserCart(user);
 		Set<Order> orders =orderService.createOrder(user, spippingAddress,cart);
@@ -68,24 +65,24 @@ public class OrderController {
 					paymentOrder.getId());
 			res.setPayment_link_url(paymentUrl);
 		}
-		return new ResponseEntity<>(res,HttpStatus.OK);
+		return new ResponseEntity<>(res, HttpStatus.OK);
 
 	}
-	
+
 	@GetMapping("/user")
-	public ResponseEntity< List<Order>> usersOrderHistoryHandler(
+	public ResponseEntity<List<Order>> usersOrderHistoryHandler(
 			@RequestHeader("Authorization")
-	String jwt) throws UserException{
-		
+			String jwt) throws UserException{
+
 		User user=userService.findUserProfileByJwt(jwt);
 		List<Order> orders=orderService.usersOrderHistory(user.getId());
 		return new ResponseEntity<>(orders,HttpStatus.ACCEPTED);
 	}
-	
+
 	@GetMapping("/{orderId}")
 	public ResponseEntity< Order> getOrderById(@PathVariable Long orderId, @RequestHeader("Authorization")
 	String jwt) throws OrderException, UserException{
-		
+
 		User user = userService.findUserProfileByJwt(jwt);
 		Order orders=orderService.findOrderById(orderId);
 		return new ResponseEntity<>(orders,HttpStatus.ACCEPTED);
@@ -94,7 +91,7 @@ public class OrderController {
 	@GetMapping("/item/{orderItemId}")
 	public ResponseEntity<OrderItem> getOrderItemById(
 			@PathVariable Long orderItemId, @RequestHeader("Authorization")
-	String jwt) throws Exception {
+			String jwt) throws Exception {
 		System.out.println("------- controller ");
 		User user = userService.findUserProfileByJwt(jwt);
 		OrderItem orderItem=orderItemService.getOrderItemById(orderItemId);

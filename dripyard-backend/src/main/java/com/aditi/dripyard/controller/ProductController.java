@@ -1,8 +1,11 @@
 package com.aditi.dripyard.controller;
 
-import com.zosh.exception.*;
-import com.zosh.model.*;
-import com.zosh.service.*;
+
+import com.aditi.dripyard.exception.ProductException;
+import com.aditi.dripyard.model.Product;
+import com.aditi.dripyard.service.ProductService;
+import com.aditi.dripyard.service.SellerService;
+import com.aditi.dripyard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;

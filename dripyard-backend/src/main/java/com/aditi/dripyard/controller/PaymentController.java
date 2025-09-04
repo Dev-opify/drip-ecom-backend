@@ -1,12 +1,15 @@
 package com.aditi.dripyard.controller;
 
-import com.zosh.domain.PaymentMethod;
-import com.zosh.model.*;
-import com.zosh.repository.CartItemRepository;
-import com.zosh.repository.CartRepository;
-import com.zosh.response.ApiResponse;
-import com.zosh.response.PaymentLinkResponse;
-import com.zosh.service.*;
+import com.aditi.dripyard.domain.PaymentMethod;
+import com.aditi.dripyard.model.Cart;
+import com.aditi.dripyard.model.PaymentOrder;
+import com.aditi.dripyard.model.Seller;
+import com.aditi.dripyard.model.SellerReport;
+import com.aditi.dripyard.repository.CartItemRepository;
+import com.aditi.dripyard.repository.CartRepository;
+import com.aditi.dripyard.response.ApiResponse;
+import com.aditi.dripyard.response.PaymentLinkResponse;
+import com.aditi.dripyard.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -89,7 +92,7 @@ public class PaymentController {
             cartRepository.save(cart);
 
         }
-      
+
         ApiResponse res = new ApiResponse();
         res.setMessage("Payment successful");
         res.setStatus(true);

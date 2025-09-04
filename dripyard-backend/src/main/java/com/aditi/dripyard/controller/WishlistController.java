@@ -1,14 +1,14 @@
 package com.aditi.dripyard.controller;
 
-import com.zosh.exception.ProductException;
-import com.zosh.exception.UserException;
-import com.zosh.exception.WishlistNotFoundException;
-import com.zosh.model.Product;
-import com.zosh.model.User;
-import com.zosh.model.Wishlist;
-import com.zosh.service.ProductService;
-import com.zosh.service.UserService;
-import com.zosh.service.WishlistService;
+
+import com.aditi.dripyard.exception.ProductException;
+import com.aditi.dripyard.exception.UserException;
+import com.aditi.dripyard.exception.WishlistNotFoundException;
+import com.aditi.dripyard.model.Product;
+import com.aditi.dripyard.model.Wishlist;
+import com.aditi.dripyard.service.ProductService;
+import com.aditi.dripyard.service.UserService;
+import com.aditi.dripyard.service.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

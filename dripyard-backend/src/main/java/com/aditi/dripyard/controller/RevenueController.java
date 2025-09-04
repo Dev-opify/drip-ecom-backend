@@ -1,10 +1,10 @@
 package com.aditi.dripyard.controller;
 
-import com.zosh.dto.RevenueChart;
-import com.zosh.exception.SellerException;
-import com.zosh.model.Seller;
-import com.zosh.service.RevenueService;
-import com.zosh.service.SellerService;
+import com.aditi.dripyard.dto.RevenueChart;
+import com.aditi.dripyard.exception.SellerException;
+import com.aditi.dripyard.model.Seller;
+import com.aditi.dripyard.service.RevenueService;
+import com.aditi.dripyard.service.SellerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

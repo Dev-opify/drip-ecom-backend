@@ -1,16 +1,12 @@
 package com.aditi.dripyard.controller;
 
-import com.zosh.exception.SellerException;
-import com.zosh.model.Order;
-import com.zosh.model.Seller;
-import com.zosh.model.Transaction;
-import com.zosh.service.SellerService;
-import com.zosh.service.TransactionService;
+import com.aditi.dripyard.exception.SellerException;
+import com.aditi.dripyard.model.Seller;
+import com.aditi.dripyard.service.SellerService;
+import com.aditi.dripyard.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/transactions")
