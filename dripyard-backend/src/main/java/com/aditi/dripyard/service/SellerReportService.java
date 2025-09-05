@@ -1,7 +1,8 @@
 package com.aditi.dripyard.service;
 
-import com.zosh.model.Seller;
-import com.zosh.model.SellerReport;
+
+import com.aditi.dripyard.model.Seller;
+import com.aditi.dripyard.model.SellerReport;
 
 public interface SellerReportService {
     SellerReport getSellerReport(Seller seller);

@@ -1,10 +1,10 @@
 package com.aditi.dripyard.service;
 
 
-import com.zosh.exception.WishlistNotFoundException;
-import com.zosh.model.Product;
-import com.zosh.model.User;
-import com.zosh.model.Wishlist;
+import com.aditi.dripyard.exception.WishlistNotFoundException;
+import com.aditi.dripyard.model.Product;
+import com.aditi.dripyard.model.User;
+import com.aditi.dripyard.model.Wishlist;
 
 public interface WishlistService {
 

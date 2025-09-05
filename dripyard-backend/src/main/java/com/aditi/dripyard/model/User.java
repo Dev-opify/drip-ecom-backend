@@ -2,35 +2,43 @@ package com.aditi.dripyard.model;
 
 import com.aditi.dripyard.domain.USER_ROLE;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode
+@Data
 public class User {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String fullName;
+
     private String mobile;
-    private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
+
+    private USER_ROLE role;
 
     @OneToMany
-    private Set<Address> addresses = new HashSet<>();
+    private Set<Address> addresses=new HashSet<>();
 
+    @JsonIgnore
     @ManyToMany
-    private Set<Coupon> usedCoupons = new HashSet<>();
+    @JoinTable(
+            name = "user_coupons",
+            inverseJoinColumns = @JoinColumn(name = "coupon_id")
+    )
+    private Set<Coupon> usedCoupons=new HashSet<>();
+
 }

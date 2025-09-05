@@ -1,8 +1,9 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.model.HomeCategory;
-import com.zosh.repository.HomeCategoryRepository;
-import com.zosh.service.HomeCategoryService;
+
+import com.aditi.dripyard.model.HomeCategory;
+import com.aditi.dripyard.repository.HomeCategoryRepository;
+import com.aditi.dripyard.service.HomeCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

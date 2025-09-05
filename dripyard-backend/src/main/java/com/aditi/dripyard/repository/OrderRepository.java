@@ -1,6 +1,6 @@
 package com.aditi.dripyard.repository;
 
-import com.zosh.model.Order;
+import com.aditi.dripyard.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;

@@ -1,12 +1,8 @@
 package com.aditi.dripyard.controller;
 
-import com.aditi.dripyard.domain.USER_ROLE;
 import com.aditi.dripyard.exception.UserException;
 import com.aditi.dripyard.model.User;
-import com.aditi.dripyard.response.AuthResponse;
-import com.aditi.dripyard.response.SignupRequest;
 import com.aditi.dripyard.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

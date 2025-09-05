@@ -1,7 +1,7 @@
 package com.aditi.dripyard.mapper;
 
-import com.zosh.dto.UserDto;
-import com.zosh.model.User;
+
+import com.aditi.dripyard.dto.UserDto;
 
 public class UserMapper {
 

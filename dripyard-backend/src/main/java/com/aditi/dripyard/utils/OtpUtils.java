@@ -2,7 +2,7 @@ package com.aditi.dripyard.utils;
 
 import java.util.Random;
 
-public class OtpUtil {
+public class OtpUtils {
 
     public static String generateOtp(){
 

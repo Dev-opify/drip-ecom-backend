@@ -1,8 +1,10 @@
 package com.aditi.dripyard.service;
 
-import com.zosh.model.Order;
-import com.zosh.model.Seller;
-import com.zosh.model.Transaction;
+
+
+import com.aditi.dripyard.model.Order;
+import com.aditi.dripyard.model.Seller;
+import com.aditi.dripyard.model.Transaction;
 
 import java.util.List;
 

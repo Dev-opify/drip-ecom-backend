@@ -1,22 +1,22 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.config.JwtProvider;
-import com.zosh.domain.USER_ROLE;
-import com.zosh.exception.SellerException;
-import com.zosh.exception.UserException;
-import com.zosh.model.Cart;
-import com.zosh.model.User;
-import com.zosh.model.VerificationCode;
-import com.zosh.repository.CartRepository;
-import com.zosh.repository.UserRepository;
-import com.zosh.repository.VerificationCodeRepository;
-import com.zosh.request.LoginRequest;
-import com.zosh.request.SignupRequest;
-import com.zosh.response.AuthResponse;
-import com.zosh.service.AuthService;
-import com.zosh.service.EmailService;
-import com.zosh.service.UserService;
-import com.zosh.utils.OtpUtils;
+import com.aditi.dripyard.config.JwtProvider;
+import com.aditi.dripyard.domain.USER_ROLE;
+import com.aditi.dripyard.exception.SellerException;
+import com.aditi.dripyard.exception.UserException;
+import com.aditi.dripyard.model.Cart;
+import com.aditi.dripyard.model.User;
+import com.aditi.dripyard.model.VerificationCode;
+import com.aditi.dripyard.repository.CartRepository;
+import com.aditi.dripyard.repository.UserRepository;
+import com.aditi.dripyard.repository.VerificationCodeRepository;
+import com.aditi.dripyard.request.LoginRequest;
+import com.aditi.dripyard.request.SignupRequest;
+import com.aditi.dripyard.response.AuthResponse;
+import com.aditi.dripyard.service.AuthService;
+import com.aditi.dripyard.service.EmailService;
+import com.aditi.dripyard.service.UserService;
+import com.aditi.dripyard.utils.OtpUtils;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -67,15 +67,16 @@ public class AuthServiceImpl implements AuthService {
             verificationCodeRepository.delete(isExist);
         }
 
-        String otp = OtpUtils.generateOTP();
+        String otp = OtpUtils.generateOtp();
+
 
         VerificationCode verificationCode = new VerificationCode();
         verificationCode.setOtp(otp);
         verificationCode.setEmail(email);
         verificationCodeRepository.save(verificationCode);
 
-        String subject = "Zosh Bazaar Login/Signup Otp";
-        String text = "your login otp is - ";
+        String subject = "Dripyard Login/Signup Otp";
+        String text = "your login otp is - "+ otp + "\n this otp is valid for 10 minutes";
         emailService.sendVerificationOtpEmail(email, otp, subject, text);
     }
 

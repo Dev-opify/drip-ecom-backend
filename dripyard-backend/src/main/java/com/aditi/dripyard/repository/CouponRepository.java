@@ -1,6 +1,7 @@
 package com.aditi.dripyard.repository;
 
-import com.zosh.model.Coupon;
+
+import com.aditi.dripyard.model.Coupon;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CouponRepository extends JpaRepository<Coupon,Long> {

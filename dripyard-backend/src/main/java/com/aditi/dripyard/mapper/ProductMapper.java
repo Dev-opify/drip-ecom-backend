@@ -1,7 +1,8 @@
 package com.aditi.dripyard.mapper;
 
-import com.zosh.dto.ProductDto;
-import com.zosh.model.Product;
+
+import com.aditi.dripyard.dto.ProductDto;
+import com.aditi.dripyard.model.Product;
 
 public class ProductMapper {
 

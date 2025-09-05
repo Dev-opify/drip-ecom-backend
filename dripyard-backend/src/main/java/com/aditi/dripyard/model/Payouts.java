@@ -1,6 +1,7 @@
 package com.aditi.dripyard.model;
 
-import com.zosh.domain.PayoutsStatus;
+
+import com.aditi.dripyard.domain.PayoutsStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

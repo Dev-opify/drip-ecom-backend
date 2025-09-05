@@ -1,8 +1,10 @@
 package com.aditi.dripyard.service;
 
-import com.zosh.model.Cart;
-import com.zosh.model.Coupon;
-import com.zosh.model.User;
+
+
+import com.aditi.dripyard.model.Cart;
+import com.aditi.dripyard.model.Coupon;
+import com.aditi.dripyard.model.User;
 
 import java.util.List;
 

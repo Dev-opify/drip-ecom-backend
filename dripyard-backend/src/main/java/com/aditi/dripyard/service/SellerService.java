@@ -2,20 +2,23 @@ package com.aditi.dripyard.service;
 
 
 import com.aditi.dripyard.domain.AccountStatus;
+import com.aditi.dripyard.exception.SellerException;
 import com.aditi.dripyard.model.Seller;
 
 import java.util.List;
 
 public interface SellerService {
-  Seller getSellerProfile(String jwt) throws Exception;
-  Seller createSeller(Seller seller) throws Exception;
-  Seller getSellerById(Long id) throws Exception;
-  Seller getSellerByEmail(String email) throws Exception;
+  Seller getSellerProfile(String jwt) throws SellerException;
+  Seller createSeller(Seller seller) throws SellerException;
+  Seller getSellerById(Long id) throws SellerException;
+  Seller getSellerByEmail(String email) throws SellerException;
   List<Seller> getAllSellers(AccountStatus status);
-    Seller updateSeller(Long id, Seller seller) throws Exception;
-    void deleteSeller(Long id) throws Exception;
-    Seller verifyEmail(String email, String otp);
-    Seller updateSellerAccountStatus(Long sellerId, AccountStatus status) throws Exception;
+  Seller updateSeller(Long id, Seller seller) throws SellerException;
+  void deleteSeller(Long id) throws SellerException;
+  Seller verifyEmail(String email,String otp) throws SellerException;
+
+  Seller updateSellerAccountStatus(Long sellerId, AccountStatus status) throws SellerException;
 }
+
 
 

@@ -1,8 +1,9 @@
 package com.aditi.dripyard.response;
 
-import com.zosh.dto.OrderHistory;
-import com.zosh.model.Cart;
-import com.zosh.model.Product;
+
+import com.aditi.dripyard.dto.OrderHistory;
+import com.aditi.dripyard.model.Cart;
+import com.aditi.dripyard.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,9 +1,9 @@
 package com.aditi.dripyard.service;
 
 
-import com.zosh.domain.USER_ROLE;
-import com.zosh.model.User;
-import com.zosh.repository.UserRepository;
+import com.aditi.dripyard.domain.USER_ROLE;
+import com.aditi.dripyard.model.User;
+import com.aditi.dripyard.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;

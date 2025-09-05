@@ -1,23 +1,27 @@
 package com.aditi.dripyard.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 
-@Entity
-@Getter
 @Setter
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
-@EqualsAndHashCode
+@AllArgsConstructor
+@Entity
 public class CartItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
     @JsonIgnore
+    @ManyToOne
     private Cart cart;
 
     @ManyToOne
@@ -25,10 +29,9 @@ public class CartItem {
 
     private String size;
 
-    private int quantity= 1;
+    private int quantity;
 
     private Integer mrpPrice;
-
 
     private Integer sellingPrice;
 
@@ -36,9 +39,5 @@ public class CartItem {
 
 
 
-
-
-
-
-
 }
+

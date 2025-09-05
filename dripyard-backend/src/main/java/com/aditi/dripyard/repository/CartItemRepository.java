@@ -1,8 +1,9 @@
 package com.aditi.dripyard.repository;
 
-import com.zosh.model.Cart;
-import com.zosh.model.CartItem;
-import com.zosh.model.Product;
+
+import com.aditi.dripyard.model.Cart;
+import com.aditi.dripyard.model.CartItem;
+import com.aditi.dripyard.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {

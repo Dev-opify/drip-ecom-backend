@@ -2,20 +2,20 @@ package com.aditi.dripyard.model;
 
 import com.aditi.dripyard.domain.PaymentMethod;
 import com.aditi.dripyard.domain.PaymentOrderStatus;
-
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
-
-@Getter
-@Setter
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+@Data
 public class PaymentOrder {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -26,7 +26,7 @@ public class PaymentOrder {
 
     private PaymentMethod paymentMethod;
 
-    private String paymentLink;
+    private String paymentLinkId;
 
 
     @ManyToOne
@@ -34,6 +34,5 @@ public class PaymentOrder {
 
     @OneToMany
     private Set<Order> orders = new HashSet<>();
-
-
 }
+

@@ -1,16 +1,15 @@
 package com.aditi.dripyard.model;
 
 import jakarta.persistence.*;
+
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Data;
 
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode
+@Table(name = "categories")
+@Data
 public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -19,8 +18,6 @@ public class Category {
     private String name;
 
     @NotNull
-
-
     @Column(unique = true)
     private String categoryId;
 
@@ -29,6 +26,7 @@ public class Category {
 
     @NotNull
     private Integer level;
+
 
 
 }

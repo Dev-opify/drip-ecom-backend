@@ -1,6 +1,7 @@
 package com.aditi.dripyard.repository;
 
-import com.zosh.model.Product;
+
+import com.aditi.dripyard.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

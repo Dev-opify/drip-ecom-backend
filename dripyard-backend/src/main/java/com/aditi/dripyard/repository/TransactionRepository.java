@@ -1,6 +1,6 @@
 package com.aditi.dripyard.repository;
 
-import com.zosh.model.Transaction;
+import com.aditi.dripyard.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

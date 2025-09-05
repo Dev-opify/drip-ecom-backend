@@ -1,14 +1,15 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.exception.ProductException;
-import com.zosh.model.Cart;
-import com.zosh.model.CartItem;
-import com.zosh.model.Product;
-import com.zosh.model.User;
-import com.zosh.repository.CartItemRepository;
-import com.zosh.repository.CartRepository;
-import com.zosh.service.CartService;
-import com.zosh.service.ProductService;
+
+import com.aditi.dripyard.exception.ProductException;
+import com.aditi.dripyard.model.Cart;
+import com.aditi.dripyard.model.CartItem;
+import com.aditi.dripyard.model.Product;
+import com.aditi.dripyard.model.User;
+import com.aditi.dripyard.repository.CartItemRepository;
+import com.aditi.dripyard.repository.CartRepository;
+import com.aditi.dripyard.service.CartService;
+import com.aditi.dripyard.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,9 +1,10 @@
 package com.aditi.dripyard.service;
 
-import com.zosh.exception.ProductException;
-import com.zosh.model.Product;
-import com.zosh.model.Seller;
-import com.zosh.request.CreateProductRequest;
+
+import com.aditi.dripyard.exception.ProductException;
+import com.aditi.dripyard.model.Product;
+import com.aditi.dripyard.model.Seller;
+import com.aditi.dripyard.request.CreateProductRequest;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

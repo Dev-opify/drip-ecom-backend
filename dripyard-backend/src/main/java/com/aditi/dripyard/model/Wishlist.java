@@ -1,7 +1,10 @@
 package com.aditi.dripyard.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +14,6 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class Wishlist {
 
     @Id
@@ -22,6 +24,6 @@ public class Wishlist {
     private User user;
 
     @ManyToMany
-    private Set<Product> products = new HashSet<>();
-
+    private Set<Product> products=new HashSet<>();
 }
+

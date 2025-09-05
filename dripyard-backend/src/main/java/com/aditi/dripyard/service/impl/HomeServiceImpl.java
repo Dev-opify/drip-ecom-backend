@@ -1,11 +1,11 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.domain.HomeCategorySection;
-import com.zosh.model.Deal;
-import com.zosh.model.Home;
-import com.zosh.model.HomeCategory;
-import com.zosh.repository.DealRepository;
-import com.zosh.service.HomeService;
+import com.aditi.dripyard.domain.HomeCategorySection;
+import com.aditi.dripyard.model.Deal;
+import com.aditi.dripyard.model.Home;
+import com.aditi.dripyard.model.HomeCategory;
+import com.aditi.dripyard.repository.DealRepository;
+import com.aditi.dripyard.service.HomeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,10 +35,16 @@ public class HomeServiceImpl implements HomeService {
                         category.getSection() == HomeCategorySection.SHOP_BY_CATEGORIES)
                 .collect(Collectors.toList());
 
-        List<HomeCategory> electricCategories = allCategories.stream()
+        List<HomeCategory> tshirtCategories = allCategories.stream()
                 .filter(category ->
-                        category.getSection() == HomeCategorySection.ELECTRIC_CATEGORIES)
+                        category.getSection() == HomeCategorySection.TSHIRT_CATEGORIES)
                 .collect(Collectors.toList());
+
+        List<HomeCategory> hoodieCategories = allCategories.stream()
+                .filter(category ->
+                        category.getSection() == HomeCategorySection.HOODIE_CATEGORIES)
+                .collect(Collectors.toList());
+
 
         List<HomeCategory> dealCategories = allCategories.stream()
                 .filter(category -> category.getSection() == HomeCategorySection.DEALS)
@@ -58,9 +64,11 @@ public class HomeServiceImpl implements HomeService {
         Home home = new Home();
         home.setGrid(gridCategories);
         home.setShopByCategories(shopByCategories);
-        home.setElectricCategories(electricCategories);
-        home.setDeals(createdDeals);
-        home.setDealCategories(dealCategories);
+        home.setTshirtCategories(tshirtCategories);
+        home.setHoodieCategories(hoodieCategories);
+        home.setDeals(dealCategories);
+
+
 
         return home;
     }

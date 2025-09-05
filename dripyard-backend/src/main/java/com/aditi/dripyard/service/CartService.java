@@ -1,10 +1,11 @@
 package com.aditi.dripyard.service;
 
-import com.zosh.exception.ProductException;
-import com.zosh.model.Cart;
-import com.zosh.model.CartItem;
-import com.zosh.model.Product;
-import com.zosh.model.User;
+
+import com.aditi.dripyard.exception.ProductException;
+import com.aditi.dripyard.model.Cart;
+import com.aditi.dripyard.model.CartItem;
+import com.aditi.dripyard.model.Product;
+import com.aditi.dripyard.model.User;
 
 public interface CartService {
 	

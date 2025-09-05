@@ -1,11 +1,17 @@
 package com.aditi.dripyard.model;
 
-import jakarta.persistence.Entity;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Home {
 
     private List<HomeCategory> grid;
@@ -16,10 +22,15 @@ public class Home {
 
     private List<HomeCategory> hoodieCategories;
 
-    private List<Deal> deals;
-
-
-
-
-
+    private List<HomeCategory> deals;
 }
+
+
+
+
+
+//    GRID,
+//    SHOP_BY_CATEGORIES,
+//    TSHIRT_CATEGORIES,
+//    HOODIE_CATEGORIES,
+//    DEALS

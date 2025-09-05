@@ -1,7 +1,8 @@
 package com.aditi.dripyard.repository;
 
-import com.zosh.domain.PayoutsStatus;
-import com.zosh.model.Payouts;
+
+import com.aditi.dripyard.domain.PayoutsStatus;
+import com.aditi.dripyard.model.Payouts;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

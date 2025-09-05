@@ -1,7 +1,7 @@
 package com.aditi.dripyard.service;
 
 
-import com.zosh.model.OrderItem;
+import com.aditi.dripyard.model.OrderItem;
 
 public interface OrderItemService {
 

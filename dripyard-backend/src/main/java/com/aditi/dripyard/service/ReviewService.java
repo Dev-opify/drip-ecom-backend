@@ -1,10 +1,11 @@
 package com.aditi.dripyard.service;
 
-import com.zosh.exception.ReviewNotFoundException;
-import com.zosh.model.Product;
-import com.zosh.model.Review;
-import com.zosh.model.User;
-import com.zosh.request.CreateReviewRequest;
+
+import com.aditi.dripyard.exception.ReviewNotFoundException;
+import com.aditi.dripyard.model.Product;
+import com.aditi.dripyard.model.Review;
+import com.aditi.dripyard.model.User;
+import com.aditi.dripyard.request.CreateReviewRequest;
 
 import javax.naming.AuthenticationException;
 import java.util.List;

@@ -1,10 +1,11 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.domain.USER_ROLE;
-import com.zosh.model.Seller;
-import com.zosh.model.User;
-import com.zosh.repository.SellerRepository;
-import com.zosh.repository.UserRepository;
+
+import com.aditi.dripyard.domain.USER_ROLE;
+import com.aditi.dripyard.model.Seller;
+import com.aditi.dripyard.model.User;
+import com.aditi.dripyard.repository.SellerRepository;
+import com.aditi.dripyard.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,6 +1,6 @@
 package com.aditi.dripyard.repository;
 
-import com.zosh.model.Review;
+import com.aditi.dripyard.model.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

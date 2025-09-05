@@ -1,11 +1,12 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.exception.CartItemException;
-import com.zosh.exception.UserException;
-import com.zosh.model.CartItem;
-import com.zosh.model.User;
-import com.zosh.repository.CartItemRepository;
-import com.zosh.service.CartItemService;
+
+import com.aditi.dripyard.exception.CartItemException;
+import com.aditi.dripyard.exception.UserException;
+import com.aditi.dripyard.model.CartItem;
+import com.aditi.dripyard.model.User;
+import com.aditi.dripyard.repository.CartItemRepository;
+import com.aditi.dripyard.service.CartItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

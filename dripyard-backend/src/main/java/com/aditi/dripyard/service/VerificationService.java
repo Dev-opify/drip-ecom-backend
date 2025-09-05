@@ -1,6 +1,7 @@
 package com.aditi.dripyard.service;
 
-import com.zosh.model.VerificationCode;
+
+import com.aditi.dripyard.model.VerificationCode;
 
 public interface VerificationService {
 

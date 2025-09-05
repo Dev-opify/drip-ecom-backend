@@ -1,12 +1,11 @@
 package com.aditi.dripyard.mapper;
 
-import com.zosh.domain.OrderStatus;
-import com.zosh.dto.OrderDto;
-import com.zosh.dto.OrderHistory;
-import com.zosh.dto.OrderItemDto;
-import com.zosh.model.Order;
-import com.zosh.model.OrderItem;
-import com.zosh.model.User;
+
+
+import com.aditi.dripyard.domain.OrderStatus;
+import com.aditi.dripyard.dto.OrderHistory;
+import com.aditi.dripyard.dto.OrderItemDto;
+import com.aditi.dripyard.model.OrderItem;
 
 import java.util.List;
 import java.util.stream.Collectors;

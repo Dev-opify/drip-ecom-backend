@@ -1,7 +1,8 @@
 package com.aditi.dripyard.service;
 
-import com.zosh.model.Home;
-import com.zosh.model.HomeCategory;
+
+import com.aditi.dripyard.model.Home;
+import com.aditi.dripyard.model.HomeCategory;
 
 import java.util.List;
 

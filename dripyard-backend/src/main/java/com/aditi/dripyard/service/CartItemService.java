@@ -1,13 +1,13 @@
 package com.aditi.dripyard.service;
 
-import com.zosh.exception.CartItemException;
-import com.zosh.exception.UserException;
-import com.zosh.model.CartItem;
 
+import com.aditi.dripyard.exception.CartItemException;
+import com.aditi.dripyard.exception.UserException;
+import com.aditi.dripyard.model.CartItem;
 
 public interface CartItemService {
 	
-	public CartItem updateCartItem(Long userId, Long id,CartItem cartItem) throws CartItemException, UserException;
+	public CartItem updateCartItem(Long userId, Long id, CartItem cartItem) throws CartItemException, UserException;
 	
 	public void removeCartItem(Long userId,Long cartItemId) throws CartItemException, UserException;
 	
