@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
+
     private final SellerService sellerService;
     private final HomeCategoryService homeCategoryService;
 
@@ -24,7 +25,7 @@ public class AdminController {
     @PatchMapping("/seller/{id}/status/{status}")
     public ResponseEntity<Seller> updateSellerStatus(
             @PathVariable Long id,
-            @PathVariable AccountStatus status) throws Exception {
+            @PathVariable AccountStatus status) throws SellerException {
 
         Seller updatedSeller = sellerService.updateSellerAccountStatus(id,status);
         return ResponseEntity.ok(updatedSeller);
@@ -50,5 +51,3 @@ public class AdminController {
 
     }
 }
-
-

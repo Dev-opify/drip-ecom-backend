@@ -1,6 +1,6 @@
 package com.aditi.dripyard.config;
 
-import java.lang.reflect.Array;
+
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -48,8 +48,8 @@ public class AppConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration cfg = new CorsConfiguration();
-                cfg.setAllowedOrigins(Arrays.asList("dripyard.com ",
-                        "http://localhost:3000 "));
+                cfg.setAllowedOrigins(Arrays.asList(" dripyard.com",
+                        "http://localhost:3000"));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
                 cfg.setAllowedHeaders(Collections.singletonList("*"));
@@ -67,5 +67,6 @@ public class AppConfig {
 
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate(); }
+        return new RestTemplate();
     }
+}
