@@ -1,13 +1,14 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.exception.ProductException;
-import com.zosh.model.Category;
-import com.zosh.model.Product;
-import com.zosh.model.Seller;
-import com.zosh.repository.CategoryRepository;
-import com.zosh.repository.ProductRepository;
-import com.zosh.request.CreateProductRequest;
-import com.zosh.service.ProductService;
+
+import com.aditi.dripyard.exception.ProductException;
+import com.aditi.dripyard.model.Category;
+import com.aditi.dripyard.model.Product;
+import com.aditi.dripyard.model.Seller;
+import com.aditi.dripyard.repository.CategoryRepository;
+import com.aditi.dripyard.repository.ProductRepository;
+import com.aditi.dripyard.request.CreateProductRequest;
+import com.aditi.dripyard.service.ProductService;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;

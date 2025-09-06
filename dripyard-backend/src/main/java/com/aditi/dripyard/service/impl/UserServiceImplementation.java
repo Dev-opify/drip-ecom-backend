@@ -1,12 +1,12 @@
 package com.aditi.dripyard.service.impl;
 
 
-import com.zosh.config.JwtProvider;
-import com.zosh.exception.UserException;
-import com.zosh.model.User;
-import com.zosh.repository.PasswordResetTokenRepository;
-import com.zosh.repository.UserRepository;
-import com.zosh.service.UserService;
+import com.aditi.dripyard.config.JwtProvider;
+import com.aditi.dripyard.exception.UserException;
+import com.aditi.dripyard.model.User;
+import com.aditi.dripyard.repository.PasswordResetTokenRepository;
+import com.aditi.dripyard.repository.UserRepository;
+import com.aditi.dripyard.service.UserService;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

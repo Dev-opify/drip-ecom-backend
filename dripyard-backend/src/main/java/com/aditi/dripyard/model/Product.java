@@ -1,25 +1,27 @@
 package com.aditi.dripyard.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.*;
+
+import lombok.*;
+
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
+
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String title;
-
 
     private String description;
 
@@ -27,15 +29,14 @@ public class Product {
 
     private int sellingPrice;
 
-    private String discountPercent;
-
+    private int discountPercent;
 
     private int quantity;
 
-    private String colour;
+    private String color;
 
     @ElementCollection
-    private List<String> images = new ArrayList<>();
+    private List<String> images =new ArrayList<>();
 
     private int numRatings;
 
@@ -47,14 +48,11 @@ public class Product {
 
     private LocalDateTime createdAt;
 
-    // @ElementCollection
+    //    @ElementCollection
     private String Sizes;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
-
-    public String getColor() {
-        return colour;
-    }
+    private boolean in_stock = true;
 }

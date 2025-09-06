@@ -1,9 +1,10 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.model.Seller;
-import com.zosh.model.SellerReport;
-import com.zosh.repository.SellerReportRepository;
-import com.zosh.service.SellerReportService;
+
+import com.aditi.dripyard.model.Seller;
+import com.aditi.dripyard.model.SellerReport;
+import com.aditi.dripyard.repository.SellerReportRepository;
+import com.aditi.dripyard.service.SellerReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

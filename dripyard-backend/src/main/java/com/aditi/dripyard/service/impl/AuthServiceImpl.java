@@ -67,8 +67,7 @@ public class AuthServiceImpl implements AuthService {
             verificationCodeRepository.delete(isExist);
         }
 
-        String otp = OtpUtils.generateOtp();
-
+        String otp = OtpUtils.generateOTP();
 
         VerificationCode verificationCode = new VerificationCode();
         verificationCode.setOtp(otp);
@@ -76,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
         verificationCodeRepository.save(verificationCode);
 
         String subject = "Dripyard Login/Signup Otp";
-        String text = "your login otp is - "+ otp + "\n this otp is valid for 10 minutes";
+        String text = "your login otp is - ";
         emailService.sendVerificationOtpEmail(email, otp, subject, text);
     }
 

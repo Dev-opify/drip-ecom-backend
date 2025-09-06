@@ -1,16 +1,17 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.domain.OrderStatus;
-import com.zosh.domain.PaymentStatus;
-import com.zosh.exception.OrderException;
-import com.zosh.model.*;
-import com.zosh.repository.AddressRepository;
-import com.zosh.repository.OrderItemRepository;
-import com.zosh.repository.OrderRepository;
-import com.zosh.repository.UserRepository;
-import com.zosh.service.CartService;
-import com.zosh.service.OrderItemService;
-import com.zosh.service.OrderService;
+
+import com.aditi.dripyard.domain.OrderStatus;
+import com.aditi.dripyard.domain.PaymentStatus;
+import com.aditi.dripyard.exception.OrderException;
+import com.aditi.dripyard.model.*;
+import com.aditi.dripyard.repository.AddressRepository;
+import com.aditi.dripyard.repository.OrderItemRepository;
+import com.aditi.dripyard.repository.OrderRepository;
+import com.aditi.dripyard.repository.UserRepository;
+import com.aditi.dripyard.service.CartService;
+import com.aditi.dripyard.service.OrderItemService;
+import com.aditi.dripyard.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,14 +1,15 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.config.JwtProvider;
-import com.zosh.domain.AccountStatus;
-import com.zosh.domain.USER_ROLE;
-import com.zosh.exception.SellerException;
-import com.zosh.model.Address;
-import com.zosh.model.Seller;
-import com.zosh.repository.AddressRepository;
-import com.zosh.repository.SellerRepository;
-import com.zosh.service.SellerService;
+
+import com.aditi.dripyard.config.JwtProvider;
+import com.aditi.dripyard.domain.AccountStatus;
+import com.aditi.dripyard.domain.USER_ROLE;
+import com.aditi.dripyard.exception.SellerException;
+import com.aditi.dripyard.model.Address;
+import com.aditi.dripyard.model.Seller;
+import com.aditi.dripyard.repository.AddressRepository;
+import com.aditi.dripyard.repository.SellerRepository;
+import com.aditi.dripyard.service.SellerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

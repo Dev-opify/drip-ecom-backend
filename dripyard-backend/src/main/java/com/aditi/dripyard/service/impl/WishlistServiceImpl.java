@@ -1,11 +1,12 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.exception.WishlistNotFoundException;
-import com.zosh.model.Product;
-import com.zosh.model.User;
-import com.zosh.model.Wishlist;
-import com.zosh.repository.WishlistRepository;
-import com.zosh.service.WishlistService;
+
+import com.aditi.dripyard.exception.WishlistNotFoundException;
+import com.aditi.dripyard.model.Product;
+import com.aditi.dripyard.model.User;
+import com.aditi.dripyard.model.Wishlist;
+import com.aditi.dripyard.repository.WishlistRepository;
+import com.aditi.dripyard.service.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,8 +1,9 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.model.VerificationCode;
-import com.zosh.repository.VerificationCodeRepository;
-import com.zosh.service.VerificationService;
+
+import com.aditi.dripyard.model.VerificationCode;
+import com.aditi.dripyard.repository.VerificationCodeRepository;
+import com.aditi.dripyard.service.VerificationService;
 import org.springframework.stereotype.Service;
 
 @Service

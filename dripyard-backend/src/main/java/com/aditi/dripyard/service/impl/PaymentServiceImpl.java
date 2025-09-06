@@ -1,5 +1,14 @@
 package com.aditi.dripyard.service.impl;
 
+import com.aditi.dripyard.domain.PaymentOrderStatus;
+import com.aditi.dripyard.domain.PaymentStatus;
+import com.aditi.dripyard.model.Order;
+import com.aditi.dripyard.model.PaymentOrder;
+import com.aditi.dripyard.model.User;
+import com.aditi.dripyard.repository.CartRepository;
+import com.aditi.dripyard.repository.OrderRepository;
+import com.aditi.dripyard.repository.PaymentOrderRepository;
+import com.aditi.dripyard.service.PaymentService;
 import com.razorpay.Payment;
 import com.razorpay.PaymentLink;
 import com.razorpay.RazorpayClient;
@@ -8,15 +17,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
-import com.zosh.domain.PaymentOrderStatus;
-import com.zosh.domain.PaymentStatus;
-import com.zosh.model.Order;
-import com.zosh.model.PaymentOrder;
-import com.zosh.model.User;
-import com.zosh.repository.CartRepository;
-import com.zosh.repository.OrderRepository;
-import com.zosh.repository.PaymentOrderRepository;
-import com.zosh.service.PaymentService;
+
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,37 +87,37 @@ public class PaymentServiceImpl implements PaymentService {
         if(paymentOrder.getStatus().equals(PaymentOrderStatus.PENDING)){
 
 
-                RazorpayClient razorpay = new RazorpayClient(apiKey, apiSecret);
-                Payment payment = razorpay.payments.fetch(paymentId);
+            RazorpayClient razorpay = new RazorpayClient(apiKey, apiSecret);
+            Payment payment = razorpay.payments.fetch(paymentId);
 
-                Integer amount = payment.get("amount");
-                String status = payment.get("status");
+            Integer amount = payment.get("amount");
+            String status = payment.get("status");
 
-                if(status.equals("captured")){
+            if(status.equals("captured")){
 //                    System.out.println("payment ===== captured");
-                    Set<Order> orders=paymentOrder.getOrders();
-                    for(Order order:orders){
-                        order.setPaymentStatus(PaymentStatus.COMPLETED);
-                        orderRepository.save(order);
-                    }
-                    paymentOrder.setStatus(PaymentOrderStatus.SUCCESS);
-                    paymentOrderRepository.save(paymentOrder);
-
-
-                    return true;
+                Set<Order> orders=paymentOrder.getOrders();
+                for(Order order:orders){
+                    order.setPaymentStatus(PaymentStatus.COMPLETED);
+                    orderRepository.save(order);
                 }
-                paymentOrder.setStatus(PaymentOrderStatus.FAILED);
+                paymentOrder.setStatus(PaymentOrderStatus.SUCCESS);
                 paymentOrderRepository.save(paymentOrder);
-                return false;
-            }
 
+
+                return true;
+            }
+            paymentOrder.setStatus(PaymentOrderStatus.FAILED);
+            paymentOrderRepository.save(paymentOrder);
             return false;
+        }
+
+        return false;
     }
 
     @Override
     public PaymentLink createRazorpayPaymentLink(User user,
-                                            Long Amount,
-                                            Long orderId
+                                                 Long Amount,
+                                                 Long orderId
     )
             throws RazorpayException {
 

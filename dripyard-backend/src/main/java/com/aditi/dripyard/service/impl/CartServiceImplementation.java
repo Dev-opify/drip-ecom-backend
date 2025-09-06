@@ -16,11 +16,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CartServiceImplementation implements CartService {
-	
+
 	private final CartRepository cartRepository;
 	private final CartItemRepository cartItemRepository;
 	private final ProductService productService;
-	
+
 
 	public Cart findUserCart(User user) {
 		Cart cart =	cartRepository.findByUserId(user.getId());
@@ -39,9 +39,9 @@ public class CartServiceImplementation implements CartService {
 		cart.setTotalSellingPrice(totalDiscountedPrice-cart.getCouponPrice());
 		cart.setDiscount(calculateDiscountPercentage(totalPrice,totalDiscountedPrice));
 		cart.setTotalItem(totalItem);
-		
+
 		return cartRepository.save(cart);
-		
+
 	}
 
 	public static int calculateDiscountPercentage(double mrpPrice, double sellingPrice) {
@@ -58,19 +58,19 @@ public class CartServiceImplementation implements CartService {
 								Product product,
 								String size,
 								int quantity
-								) throws ProductException {
+	) throws ProductException {
 		Cart cart=findUserCart(user);
-		
+
 		CartItem isPresent=cartItemRepository.findByCartAndProductAndSize(
 				cart, product, size);
-		
+
 		if(isPresent == null) {
 			CartItem cartItem = new CartItem();
 			cartItem.setProduct(product);
 
 			cartItem.setQuantity(quantity);
 			cartItem.setUserId(user.getId());
-			
+
 			int totalPrice=quantity*product.getSellingPrice();
 			cartItem.setSellingPrice(totalPrice);
 			cartItem.setMrpPrice(quantity*product.getMrpPrice());
@@ -79,7 +79,7 @@ public class CartServiceImplementation implements CartService {
 			cart.getCartItems().add(cartItem);
 			cartItem.setCart(cart);
 
-            return cartItemRepository.save(cartItem);
+			return cartItemRepository.save(cartItem);
 		}
 
 		return isPresent;

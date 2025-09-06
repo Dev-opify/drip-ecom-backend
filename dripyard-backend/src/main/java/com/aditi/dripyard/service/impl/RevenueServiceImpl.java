@@ -1,9 +1,10 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.dto.RevenueChart;
-import com.zosh.model.Order;
-import com.zosh.repository.OrderRepository;
-import com.zosh.service.RevenueService;
+
+import com.aditi.dripyard.dto.RevenueChart;
+import com.aditi.dripyard.model.Order;
+import com.aditi.dripyard.repository.OrderRepository;
+import com.aditi.dripyard.service.RevenueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

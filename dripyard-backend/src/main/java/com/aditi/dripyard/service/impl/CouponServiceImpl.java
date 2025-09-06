@@ -1,6 +1,5 @@
 package com.aditi.dripyard.service.impl;
 
-
 import com.aditi.dripyard.exception.CouponNotValidException;
 import com.aditi.dripyard.model.Cart;
 import com.aditi.dripyard.model.Coupon;
@@ -26,8 +25,8 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public Cart applyCoupon(String code,
-                                 double orderValue,
-                                 User user)
+                            double orderValue,
+                            User user)
             throws Exception {
         Coupon coupon = couponRepository.findByCode(code);
         Cart cart = cartRepository.findByUserId(user.getId());
@@ -43,25 +42,25 @@ public class CouponServiceImpl implements CouponService {
             throw new CouponNotValidException("valid for minimum order value "+coupon.getMinimumOrderValue() );
         }
 
-            if (
-                    coupon.isActive() &&
-                    LocalDate.now().isAfter(coupon.getValidityStartDate()) &&
-                    LocalDate.now().isBefore(coupon.getValidityEndDate())
+        if (
+                coupon.isActive() &&
+                        LocalDate.now().isAfter(coupon.getValidityStartDate()) &&
+                        LocalDate.now().isBefore(coupon.getValidityEndDate())
 
 
-            ) {
+        ) {
 
-                user.getUsedCoupons().add(coupon);
-                userRepository.save(user);
+            user.getUsedCoupons().add(coupon);
+            userRepository.save(user);
 
-                double discountedPrice = Math.round((cart.getTotalSellingPrice() * coupon.getDiscountPercentage()) / 100);
-                cart.setTotalSellingPrice(cart.getTotalSellingPrice() - discountedPrice);
-                cart.setCouponCode(code);
-                cart.setCouponPrice((int) discountedPrice);
-                return cartRepository.save(cart);
+            double discountedPrice = Math.round((cart.getTotalSellingPrice() * coupon.getDiscountPercentage()) / 100);
+            cart.setTotalSellingPrice(cart.getTotalSellingPrice() - discountedPrice);
+            cart.setCouponCode(code);
+            cart.setCouponPrice((int) discountedPrice);
+            return cartRepository.save(cart);
 //                return cart;
-            }
-            throw new CouponNotValidException("coupon not valid...");
+        }
+        throw new CouponNotValidException("coupon not valid...");
 
     }
 
@@ -105,6 +104,6 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public Coupon getCouponById(Long couponId) {
 //        return couponRepository.findById(couponId).orElseThrow(new Exception("coupon not found"));
-    return null;
+        return null;
     }
 }

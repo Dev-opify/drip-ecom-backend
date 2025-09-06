@@ -1,9 +1,10 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.exception.OrderException;
-import com.zosh.model.OrderItem;
-import com.zosh.repository.OrderItemRepository;
-import com.zosh.service.OrderItemService;
+
+import com.aditi.dripyard.exception.OrderException;
+import com.aditi.dripyard.model.OrderItem;
+import com.aditi.dripyard.repository.OrderItemRepository;
+import com.aditi.dripyard.service.OrderItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
