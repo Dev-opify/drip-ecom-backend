@@ -5,6 +5,7 @@ import com.aditi.dripyard.exception.ProductException;
 import com.aditi.dripyard.exception.UserException;
 import com.aditi.dripyard.exception.WishlistNotFoundException;
 import com.aditi.dripyard.model.Product;
+import com.aditi.dripyard.model.User;
 import com.aditi.dripyard.model.Wishlist;
 import com.aditi.dripyard.service.ProductService;
 import com.aditi.dripyard.service.UserService;

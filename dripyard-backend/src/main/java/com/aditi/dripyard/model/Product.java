@@ -54,6 +54,7 @@ public class Product {
     private List<Review> reviews = new ArrayList<>();
 
 
-
-
+    public String getColor() {
+        return colour;
+    }
 }

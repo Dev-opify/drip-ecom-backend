@@ -16,4 +16,11 @@ public class OtpUtils {
         }
         return otp.toString();
     }
+
+    public static String generateOTP() {
+
+        return "";
+    }
+
+
 }

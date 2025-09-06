@@ -34,4 +34,6 @@ public class ProductDto {
     private String Sizes;
 
 
+    public void setDiscountPercent(String discountPercent) {
+    }
 }

@@ -1,11 +1,12 @@
 package com.aditi.dripyard.service.impl;
 
-import com.zosh.model.Order;
-import com.zosh.model.Seller;
-import com.zosh.model.Transaction;
-import com.zosh.repository.SellerRepository;
-import com.zosh.repository.TransactionRepository;
-import com.zosh.service.TransactionService;
+
+import com.aditi.dripyard.model.Order;
+import com.aditi.dripyard.model.Seller;
+import com.aditi.dripyard.model.Transaction;
+import com.aditi.dripyard.repository.SellerRepository;
+import com.aditi.dripyard.repository.TransactionRepository;
+import com.aditi.dripyard.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -6,6 +6,7 @@ import com.aditi.dripyard.exception.ReviewNotFoundException;
 import com.aditi.dripyard.exception.UserException;
 import com.aditi.dripyard.model.Product;
 import com.aditi.dripyard.model.Review;
+import com.aditi.dripyard.model.User;
 import com.aditi.dripyard.request.CreateReviewRequest;
 import com.aditi.dripyard.response.ApiResponse;
 import com.aditi.dripyard.service.ProductService;

@@ -3,6 +3,7 @@ package com.aditi.dripyard.dto;
 
 import com.aditi.dripyard.domain.OrderStatus;
 import com.aditi.dripyard.domain.PaymentStatus;
+import com.aditi.dripyard.model.Address;
 import com.aditi.dripyard.model.PaymentDetails;
 import lombok.Data;
 

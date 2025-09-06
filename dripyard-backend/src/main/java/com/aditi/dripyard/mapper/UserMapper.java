@@ -2,6 +2,7 @@ package com.aditi.dripyard.mapper;
 
 
 import com.aditi.dripyard.dto.UserDto;
+import com.aditi.dripyard.model.User;
 
 public class UserMapper {
 

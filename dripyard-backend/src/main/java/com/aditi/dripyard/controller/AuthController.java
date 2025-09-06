@@ -6,6 +6,7 @@ import com.aditi.dripyard.exception.SellerException;
 import com.aditi.dripyard.exception.UserException;
 import com.aditi.dripyard.model.VerificationCode;
 import com.aditi.dripyard.request.LoginRequest;
+import com.aditi.dripyard.request.SignupRequest;
 import com.aditi.dripyard.response.ApiResponse;
 import com.aditi.dripyard.response.AuthResponse;
 import com.aditi.dripyard.service.AuthService;

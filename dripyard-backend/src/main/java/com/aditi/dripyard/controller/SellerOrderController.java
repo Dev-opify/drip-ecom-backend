@@ -4,6 +4,7 @@ package com.aditi.dripyard.controller;
 import com.aditi.dripyard.domain.OrderStatus;
 import com.aditi.dripyard.exception.OrderException;
 import com.aditi.dripyard.exception.SellerException;
+import com.aditi.dripyard.model.Order;
 import com.aditi.dripyard.model.Seller;
 import com.aditi.dripyard.response.ApiResponse;
 import com.aditi.dripyard.service.OrderService;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/seller/orders")
