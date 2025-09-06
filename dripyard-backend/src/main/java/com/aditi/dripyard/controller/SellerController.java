@@ -8,10 +8,15 @@ import com.aditi.dripyard.model.Seller;
 import com.aditi.dripyard.model.SellerReport;
 import com.aditi.dripyard.model.VerificationCode;
 import com.aditi.dripyard.repository.VerificationCodeRepository;
-import com.aditi.dripyard.request.LoginRequest;
+
 import com.aditi.dripyard.response.ApiResponse;
 import com.aditi.dripyard.response.AuthResponse;
-import com.aditi.dripyard.service.*;
+import com.aditi.dripyard.service.EmailService;
+import com.aditi.dripyard.service.SellerReportService;
+import com.aditi.dripyard.service.SellerService;
+import com.aditi.dripyard.service.VerificationService;
+
+
 import com.aditi.dripyard.service.impl.CustomeUserServiceImplementation;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +56,7 @@ public class SellerController {
         VerificationCode verificationCode = verificationService.createVerificationCode(otp, req.getEmail());
 
         String subject = "Dripyard Login Otp";
-        String text = "your login otp is - "+ otp ;
+        String text = "your login otp is - ";
         emailService.sendVerificationOtpEmail(req.getEmail(), verificationCode.getOtp(), subject, text);
 
         ApiResponse res = new ApiResponse();

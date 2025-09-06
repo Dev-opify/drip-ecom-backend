@@ -1,6 +1,6 @@
 package com.aditi.dripyard.dto;
 
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,6 +34,4 @@ public class ProductDto {
     private String Sizes;
 
 
-    public void setDiscountPercent(String discountPercent) {
-    }
 }
