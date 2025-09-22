@@ -1,4 +1,3 @@
-// R2Config.java
 package com.aditi.dripyard.config;
 
 import org.springframework.context.annotation.Bean;
@@ -8,22 +7,37 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.net.URI;
 
 @Configuration
 public class R2Config {
+
+    @Value("${cloudflare.r2.accessKey}")
+    private String accessKey;
+
+    @Value("${cloudflare.r2.secretKey}")
+    private String secretKey;
+
+    @Value("${cloudflare.r2.endpoint}")
+    private String endpoint;
+
+    @Value("${cloudflare.r2.region}")
+    private String region;
+
     @Bean
-    public S3Client r2Client() {
+    public S3Client s3Client() {
+        AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKey, secretKey);
+
         return S3Client.builder()
-                .endpointOverride(URI.create("https://<accountid>.r2.cloudflarestorage.com"))
-                .region(Region.of("auto"))
-                .credentialsProvider(
-                        StaticCredentialsProvider.create(
-                                AwsBasicCredentials.create("<ACCESS_KEY_ID>", "<SECRET_ACCESS_KEY>")
-                        )
-                )
-                .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(true).build())
+                .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                .endpointOverride(URI.create(endpoint))
+                .region(Region.of(region)) // e.g., "auto" or "us-east-1"
+                .serviceConfiguration(
+                        S3Configuration.builder()
+                                .pathStyleAccessEnabled(true)
+                                .build())
                 .build();
     }
 }
