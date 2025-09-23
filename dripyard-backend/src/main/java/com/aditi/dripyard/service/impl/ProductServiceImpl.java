@@ -40,6 +40,7 @@ public class ProductServiceImpl implements ProductService {
                                  ) throws ProductException {
 
 
+
         int discountPercentage = calculateDiscountPercentage(req.getMrpPrice(), req.getSellingPrice());
 
         Category category1=categoryRepository.findByCategoryId(req.getCategory());
@@ -95,6 +96,21 @@ public class ProductServiceImpl implements ProductService {
         double discountPercentage = (discount / mrpPrice) * 100;
         return (int) discountPercentage;
     }
+
+
+    @Override
+    public void addImageToProduct(Long productId, String imageKey) throws ProductException {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductException("Product not found"));
+        List<String> images = product.getImages();
+        if (images == null) {
+            images = new ArrayList<>();
+        }
+        images.add(imageKey);
+        product.setImages(images);
+        productRepository.save(product);
+    }
+
 
     @Override
     public void deleteProduct(Long productId) throws ProductException {

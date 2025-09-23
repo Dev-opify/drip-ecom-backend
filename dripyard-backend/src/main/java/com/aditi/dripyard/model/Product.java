@@ -20,6 +20,8 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    // In Product.java
+
 
     private String title;
 

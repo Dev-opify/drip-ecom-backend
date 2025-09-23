@@ -10,6 +10,10 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ProductService {
+
+    // In ProductService.java
+    void addImageToProduct(Long productId, String imageKey) throws ProductException;
+
     public Product createProduct(CreateProductRequest req,
 
                                  Seller seller) throws ProductException;
