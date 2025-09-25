@@ -31,3 +31,43 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### Application Secrets ###
+### Secrets ###
+src/main/resources/secrets.properties
+
+.env
+*.env
+*.env.local
+
+### Properties ###
+application-prod.properties
+application-dev.properties
+
+### Application Properties with Secrets ###
+**/application-*.properties
+!**/application.properties
+!**/application-test.properties
+
+### Local Configuration ###
+config/local/
+
+### Logs ###
+*.log
+logs/
+
+### Database ###
+*.db
+*.sqlite
+*.sql
+/data/
+
+### Temp files ###
+*.swp
+*.swo
+*~
+
+### Build ###
+target/
+!.mvn/wrapper/maven-wrapper.j
