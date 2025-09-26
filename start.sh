@@ -1,11 +1,7 @@
 #!/bin/bash
-cd dripyard-backend
 
-# Build the project (skip tests to save time)
-./mvnw clean package -DskipTests
+# Go to the folder where your jar is
+cd dripyard-backend/target
 
-# List target folder to check jar
-ls -l target/
-
-# Run Spring Boot app
-java -jar target/dripyard-backend-0.0.1-SNAPSHOT.jar
+# Run the Spring Boot jar with dynamic port
+java -jar dripyard-backend-0.0.1-SNAPSHOT.jar --server.port=$PORT
