@@ -1,0 +1,17 @@
+target/
+.git/
+.gitignore
+README.md
+API-endpoints-swagger/
+r2test/
+*.iml
+*.iws
+*.ipr
+.idea/
+.settings/
+.vscode/
+*.class
+*.log
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+HELP.md
