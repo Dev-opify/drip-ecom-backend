@@ -35,7 +35,10 @@ public class AppConfig {
                                 .requestMatchers("/api/products/*/reviews").permitAll()
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                                 .requestMatchers("/api/images/**").permitAll()
+<<<<<<< HEAD
                                 .requestMatchers("/api/test/**").permitAll()
+=======
+>>>>>>> 0f3c1a0e4673939a9872b19361bc1a6b1f00516c
                                 .requestMatchers("/api/**").authenticated()
                                 .anyRequest().permitAll()
                 )

@@ -70,4 +70,8 @@ logs/
 
 ### Build ###
 target/
+<<<<<<< HEAD
 !.mvn/wrapper/maven-wrapper.jar
+=======
+!.mvn/wrapper/maven-wrapper.j
+>>>>>>> 0f3c1a0e4673939a9872b19361bc1a6b1f00516c

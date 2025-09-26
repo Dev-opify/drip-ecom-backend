@@ -1,5 +1,9 @@
 package com.aditi.dripyard.controller;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0f3c1a0e4673939a9872b19361bc1a6b1f00516c
 import com.aditi.dripyard.exception.ProductException;
 import com.aditi.dripyard.exception.ReviewNotFoundException;
 import com.aditi.dripyard.exception.UserException;
@@ -12,10 +16,17 @@ import com.aditi.dripyard.service.ProductService;
 import com.aditi.dripyard.service.ReviewService;
 import com.aditi.dripyard.service.UserService;
 import lombok.RequiredArgsConstructor;
+<<<<<<< HEAD
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+=======
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.naming.AuthenticationException;
+>>>>>>> 0f3c1a0e4673939a9872b19361bc1a6b1f00516c
 import java.util.List;
 
 @RestController
@@ -30,8 +41,15 @@ public class ReviewController {
     @GetMapping("/products/{productId}/reviews")
     public ResponseEntity<List<Review>> getReviewsByProductId(
             @PathVariable Long productId) {
+<<<<<<< HEAD
         List<Review> reviews = reviewService.getReviewsByProductId(productId);
         return ResponseEntity.ok(reviews);
+=======
+
+        List<Review> reviews = reviewService.getReviewsByProductId(productId);
+        return ResponseEntity.ok(reviews);
+
+>>>>>>> 0f3c1a0e4673939a9872b19361bc1a6b1f00516c
     }
 
     @PostMapping("/products/{productId}/reviews")
@@ -39,11 +57,23 @@ public class ReviewController {
             @RequestBody CreateReviewRequest req,
             @PathVariable Long productId,
             @RequestHeader("Authorization") String jwt) throws UserException, ProductException {
+<<<<<<< HEAD
         User user = userService.findUserProfileByJwt(jwt);
         Product product = productService.findProductById(productId);
 
         Review review = reviewService.createReview(req, user, product);
         return new ResponseEntity<>(review, HttpStatus.CREATED);
+=======
+
+        User user = userService.findUserProfileByJwt(jwt);
+        Product product = productService.findProductById(productId);
+
+        Review review = reviewService.createReview(
+                req, user, product
+        );
+        return ResponseEntity.ok(review);
+
+>>>>>>> 0f3c1a0e4673939a9872b19361bc1a6b1f00516c
     }
 
     @PatchMapping("/reviews/{reviewId}")
@@ -51,6 +81,7 @@ public class ReviewController {
             @RequestBody CreateReviewRequest req,
             @PathVariable Long reviewId,
             @RequestHeader("Authorization") String jwt)
+<<<<<<< HEAD
             throws UserException, ReviewNotFoundException {
         try {
             User user = userService.findUserProfileByJwt(jwt);
@@ -64,11 +95,27 @@ public class ReviewController {
         } catch (Exception e) {
             throw new ReviewNotFoundException("Failed to update review: " + e.getMessage());
         }
+=======
+            throws UserException,
+            ReviewNotFoundException, AuthenticationException {
+
+        User user = userService.findUserProfileByJwt(jwt);
+
+        Review review = reviewService.updateReview(
+                reviewId,
+                req.getReviewText(),
+                req.getReviewRating(),
+                user.getId()
+        );
+        return ResponseEntity.ok(review);
+
+>>>>>>> 0f3c1a0e4673939a9872b19361bc1a6b1f00516c
     }
 
     @DeleteMapping("/reviews/{reviewId}")
     public ResponseEntity<ApiResponse> deleteReview(
             @PathVariable Long reviewId,
+<<<<<<< HEAD
             @RequestHeader("Authorization") String jwt)
             throws UserException, ReviewNotFoundException {
         try {
@@ -85,3 +132,19 @@ public class ReviewController {
     }
 }
 
+=======
+            @RequestHeader("Authorization") String jwt) throws UserException,
+            ReviewNotFoundException, AuthenticationException {
+
+        User user = userService.findUserProfileByJwt(jwt);
+
+        reviewService.deleteReview(reviewId, user.getId());
+        ApiResponse res = new ApiResponse();
+        res.setMessage("Review deleted successfully");
+        res.setStatus(true);
+
+        return ResponseEntity.ok(res);
+
+    }
+}
+>>>>>>> 0f3c1a0e4673939a9872b19361bc1a6b1f00516c

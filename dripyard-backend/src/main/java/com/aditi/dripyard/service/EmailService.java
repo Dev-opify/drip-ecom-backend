@@ -1,14 +1,26 @@
 package com.aditi.dripyard.service;
 
+<<<<<<< HEAD
 import com.aditi.dripyard.utils.EmailTemplate;
 import com.mailersend.sdk.exceptions.MailerSendException;
 import org.springframework.beans.factory.annotation.Autowired;
+=======
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSendException;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+>>>>>>> 0f3c1a0e4673939a9872b19361bc1a6b1f00516c
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
 
     @Autowired
+<<<<<<< HEAD
     private MailerSendService mailerSendService;
 
     public void sendOrderConfirmationEmail(String to, String orderDetails) {
@@ -38,3 +50,26 @@ public class EmailService {
         }
     }
 }
+=======
+    private JavaMailSender javaMailSender;
+
+
+    public void sendVerificationOtpEmail(String userEmail, String otp, String subject, String text) throws MessagingException, MailSendException {
+
+
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+
+
+            helper.setSubject(subject);
+            helper.setText(text+otp, true);
+            helper.setTo(userEmail);
+            javaMailSender.send(mimeMessage);
+        } catch (MailException e) {
+            throw new MailSendException("Failed to send email");
+        }
+    }
+}
+
+>>>>>>> 0f3c1a0e4673939a9872b19361bc1a6b1f00516c

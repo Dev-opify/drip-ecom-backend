@@ -18,6 +18,10 @@ public class HomeController {
     @GetMapping
     public ResponseEntity<ApiResponse> home(){
         ApiResponse apiResponse = new ApiResponse();
+<<<<<<< HEAD
         apiResponse.setMessage("Dipyard Backend is running");
+=======
+        apiResponse.setMessage("Ecommerce  system");
+>>>>>>> 0f3c1a0e4673939a9872b19361bc1a6b1f00516c
         return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
     }}
