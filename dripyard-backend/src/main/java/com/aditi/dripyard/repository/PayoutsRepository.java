@@ -1,0 +1,14 @@
+package com.aditi.dripyard.repository;
+
+
+import com.aditi.dripyard.domain.PayoutsStatus;
+import com.aditi.dripyard.model.Payouts;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface PayoutsRepository extends JpaRepository<Payouts,Long> {
+
+    List<Payouts> findPayoutsBySellerId(Long sellerId);
+    List<Payouts> findAllByStatus(PayoutsStatus status);
+}
