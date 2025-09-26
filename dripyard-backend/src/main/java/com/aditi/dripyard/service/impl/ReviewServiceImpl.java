@@ -1,6 +1,5 @@
 package com.aditi.dripyard.service.impl;
 
-
 import com.aditi.dripyard.exception.ReviewNotFoundException;
 import com.aditi.dripyard.model.Product;
 import com.aditi.dripyard.model.Review;
@@ -9,9 +8,9 @@ import com.aditi.dripyard.repository.ReviewRepository;
 import com.aditi.dripyard.request.CreateReviewRequest;
 import com.aditi.dripyard.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import javax.naming.AuthenticationException;
 import java.util.List;
 
 @Service
@@ -20,13 +19,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
 
-
     @Override
     public Review createReview(CreateReviewRequest req,
                                User user,
                                Product product) {
         Review newReview = new Review();
-
         newReview.setReviewText(req.getReviewText());
         newReview.setRating(req.getReviewRating());
         newReview.setProductImages(req.getProductImages());
@@ -43,17 +40,16 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewRepository.findReviewsByProductId(productId);
     }
 
-
     @Override
     public Review updateReview(Long reviewId,
                                String reviewText,
                                double rating,
-                               Long userId) throws ReviewNotFoundException, AuthenticationException {
-        Review review=reviewRepository.findById(reviewId)
-                .orElseThrow(()-> new ReviewNotFoundException("Review Not found"));
+                               Long userId) throws ReviewNotFoundException {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException("Review Not found"));
 
-        if(review.getUser().getId()!=userId){
-            throw new AuthenticationException("You do not have permission to delete this review");
+        if (!review.getUser().getId().equals(userId)) {
+            throw new AccessDeniedException("You do not have permission to update this review");
         }
 
         review.setReviewText(reviewText);
@@ -62,14 +58,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void deleteReview(Long reviewId,Long userId) throws ReviewNotFoundException,
-            AuthenticationException {
-        Review review=reviewRepository.findById(reviewId)
-                .orElseThrow(()-> new ReviewNotFoundException("Review Not found"));
-        if(review.getUser().getId()!=userId){
-            throw new AuthenticationException("You do not have permission to delete this review");
+    public void deleteReview(Long reviewId, Long userId) throws ReviewNotFoundException {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException("Review Not found"));
+
+        if (!review.getUser().getId().equals(userId)) {
+            throw new AccessDeniedException("You do not have permission to delete this review");
         }
+
         reviewRepository.delete(review);
     }
-
 }
