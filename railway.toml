@@ -2,5 +2,10 @@
 builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
+# AFTER
 [deploy]
+# The startCommand is handled by the Dockerfile's CMD instruction
+healthcheckPath = "/actuator/health"
+
+healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
