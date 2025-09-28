@@ -2,7 +2,6 @@ package com.aditi.dripyard.service.impl;
 
 import com.aditi.dripyard.config.JwtProvider;
 import com.aditi.dripyard.domain.USER_ROLE;
-import com.aditi.dripyard.exception.SellerException;
 import com.aditi.dripyard.exception.UserException;
 import com.aditi.dripyard.model.Cart;
 import com.aditi.dripyard.model.User;
@@ -76,14 +75,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String createUser(SignupRequest req) throws SellerException {
+    public String createUser(SignupRequest req) throws UserException {
         String email = req.getEmail();
         String fullName = req.getFullName();
         String otp = req.getOtp();
 
         VerificationCode verificationCode = verificationCodeRepository.findByEmail(email);
         if (verificationCode == null || !verificationCode.getOtp().equals(otp)) {
-            throw new SellerException("Wrong OTP...");
+            throw new UserException("Wrong OTP...");
         }
 
         User user = userRepository.findByEmail(email);
@@ -112,7 +111,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse signin(LoginRequest req) throws SellerException {
+    public AuthResponse signin(LoginRequest req) throws UserException {
         String username = req.getEmail();
         String otp = req.getOtp();
 
@@ -131,7 +130,7 @@ public class AuthServiceImpl implements AuthService {
         return authResponse;
     }
 
-    private Authentication authenticate(String username, String otp) throws SellerException {
+    private Authentication authenticate(String username, String otp) throws UserException {
         UserDetails userDetails = customUserDetails.loadUserByUsername(username);
         if (userDetails == null) {
             throw new BadCredentialsException("Invalid username or password");
@@ -139,7 +138,7 @@ public class AuthServiceImpl implements AuthService {
 
         VerificationCode verificationCode = verificationCodeRepository.findByEmail(username);
         if (verificationCode == null || !verificationCode.getOtp().equals(otp)) {
-            throw new SellerException("Wrong OTP...");
+            throw new UserException("Wrong OTP...");
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

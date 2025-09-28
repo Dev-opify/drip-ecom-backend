@@ -1,10 +1,8 @@
+// dripyard-backend/src/main/java/com/aditi/dripyard/service/impl/CustomeUserServiceImplementation.java
 package com.aditi.dripyard.service.impl;
 
-
 import com.aditi.dripyard.domain.USER_ROLE;
-import com.aditi.dripyard.model.Seller;
 import com.aditi.dripyard.model.User;
-import com.aditi.dripyard.repository.SellerRepository;
 import com.aditi.dripyard.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,39 +18,33 @@ import java.util.List;
 public class CustomeUserServiceImplementation implements UserDetailsService {
 
 	private final UserRepository userRepository;
-	private final SellerRepository sellerRepository;
-	private static final String SELLER_PREFIX = "seller_";
 
-	public CustomeUserServiceImplementation(UserRepository userRepository, SellerRepository sellerRepository) {
+	// --- CONSTRUCTOR UPDATED ---
+	// Removed SellerRepository dependency
+	public CustomeUserServiceImplementation(UserRepository userRepository) {
 		this.userRepository = userRepository;
-		this.sellerRepository = sellerRepository;
 	}
 
+	// --- METHOD SIMPLIFIED ---
+	// Removed all logic related to checking for sellers
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		if (username.startsWith(SELLER_PREFIX)) {
-			// Remove prefix to get the actual username/email
-			String actualUsername = username.substring(SELLER_PREFIX.length());
-			Seller seller = sellerRepository.findByEmail(actualUsername);
-			if (seller != null) {
-				return buildUserDetails(seller.getEmail(), seller.getPassword(), seller.getRole());
-			}
-		} else {
-			User user = userRepository.findByEmail(username);
-			if (user != null) {
-				return buildUserDetails(user.getEmail(), user.getPassword(), user.getRole());
-			}
+		User user = userRepository.findByEmail(username);
+
+		if (user == null) {
+			throw new UsernameNotFoundException("User not found with email - " + username);
 		}
 
-		throw new UsernameNotFoundException("User or Seller not found with email - " + username);
-	}
-
-	private UserDetails buildUserDetails(String email, String password, USER_ROLE role) {
-		if (role == null) role = USER_ROLE.ROLE_CUSTOMER;
+		// --- Role Assignment ---
+		// Ensures that if a role is somehow null, it defaults to ROLE_CUSTOMER
+		USER_ROLE role = user.getRole();
+		if (role == null) {
+			role = USER_ROLE.ROLE_CUSTOMER;
+		}
 
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		authorities.add(new SimpleGrantedAuthority(role.toString()));
 
-		return new org.springframework.security.core.userdetails.User(email, password, authorities);
+		return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
 	}
 }

@@ -1,3 +1,4 @@
+// dripyard-backend/src/main/java/com/aditi/dripyard/model/VerificationCode.java
 package com.aditi.dripyard.model;
 
 import jakarta.persistence.*;
@@ -22,7 +23,5 @@ public class VerificationCode {
     @OneToOne
     private User user;
 
-    @OneToOne
-    private Seller seller;
-
+    // The @OneToOne Seller field has been removed.
 }

@@ -1,53 +1,62 @@
+// dripyard-backend/src/main/java/com/aditi/dripyard/controller/AdminController.java
 package com.aditi.dripyard.controller;
 
-
-import com.aditi.dripyard.domain.AccountStatus;
-import com.aditi.dripyard.exception.SellerException;
-import com.aditi.dripyard.model.HomeCategory;
-import com.aditi.dripyard.model.Seller;
-import com.aditi.dripyard.service.HomeCategoryService;
-import com.aditi.dripyard.service.SellerService;
+import com.aditi.dripyard.domain.OrderStatus;
+import com.aditi.dripyard.exception.OrderException;
+import com.aditi.dripyard.exception.ProductException;
+import com.aditi.dripyard.exception.UserException;
+import com.aditi.dripyard.model.Order;
+import com.aditi.dripyard.model.Product;
+import com.aditi.dripyard.model.User;
+import com.aditi.dripyard.request.CreateProductRequest;
+import com.aditi.dripyard.response.ApiResponse;
+import com.aditi.dripyard.service.OrderService;
+import com.aditi.dripyard.service.ProductService;
+import com.aditi.dripyard.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 @RequiredArgsConstructor
 public class AdminController {
 
-    private final SellerService sellerService;
-    private final HomeCategoryService homeCategoryService;
+    private final ProductService productService;
+    private final UserService userService;
+    private final OrderService orderService;
 
-
-    @PatchMapping("/seller/{id}/status/{status}")
-    public ResponseEntity<Seller> updateSellerStatus(
-            @PathVariable Long id,
-            @PathVariable AccountStatus status) throws SellerException {
-
-        Seller updatedSeller = sellerService.updateSellerAccountStatus(id,status);
-        return ResponseEntity.ok(updatedSeller);
-
+    @PostMapping("/products")
+    public ResponseEntity<Product> createProduct(@RequestBody CreateProductRequest req, @RequestHeader("Authorization") String jwt) throws UserException, ProductException {
+        User admin = userService.findUserProfileByJwt(jwt);
+        Product product = productService.createProduct(req, admin);
+        return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
-    @GetMapping("/home-category")
-    public ResponseEntity<List<HomeCategory>> getHomeCategory(
-    ) throws Exception {
-
-        List<HomeCategory> categories=homeCategoryService.getAllCategories();
-        return ResponseEntity.ok(categories);
-
+    @GetMapping("/products")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> products = productService.getAllProducts();
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @PatchMapping("/home-category/{id}")
-    public ResponseEntity<HomeCategory> updateHomeCategory(
-            @PathVariable Long id,
-            @RequestBody HomeCategory homeCategory) throws Exception {
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long productId) throws ProductException {
+        productService.deleteProduct(productId);
+        ApiResponse res = new ApiResponse("Product Deleted Successfully", true);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 
-        HomeCategory updatedCategory=homeCategoryService.updateCategory(homeCategory,id);
-        return ResponseEntity.ok(updatedCategory);
+    @GetMapping("/orders")
+    public ResponseEntity<List<Order>> getAllOrders() {
+        List<Order> orders = orderService.getAllOrders();
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
 
+    @PatchMapping("/orders/{orderId}/status")
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable Long orderId, @RequestParam OrderStatus status) throws OrderException {
+        Order order = orderService.updateOrderStatus(orderId, status);
+        return new ResponseEntity<>(order, HttpStatus.OK);
     }
 }

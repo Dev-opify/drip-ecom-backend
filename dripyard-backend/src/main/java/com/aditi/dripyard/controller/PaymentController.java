@@ -1,99 +1,41 @@
+// dripyard-backend/src/main/java/com/aditi/dripyard/controller/PaymentController.java
 package com.aditi.dripyard.controller;
 
-import com.aditi.dripyard.domain.PaymentMethod;
-import com.aditi.dripyard.model.*;
-import com.aditi.dripyard.repository.CartItemRepository;
-import com.aditi.dripyard.repository.CartRepository;
+import com.aditi.dripyard.domain.PaymentStatus;
+import com.aditi.dripyard.exception.OrderException;
+import com.aditi.dripyard.model.Order;
+import com.aditi.dripyard.repository.OrderRepository;
 import com.aditi.dripyard.response.ApiResponse;
-import com.aditi.dripyard.response.PaymentLinkResponse;
-import com.aditi.dripyard.service.*;
+import com.aditi.dripyard.service.OrderService;
+import com.aditi.dripyard.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/payments")
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final UserService userService;
-    private final PaymentService paymentService;
+    private final OrderService orderService;
     private final TransactionService transactionService;
-    private final SellerReportService sellerReportService;
-    private final SellerService sellerService;
-    private final CartRepository cartRepository;
-    private final CartItemRepository cartItemRepository;
 
-
-    @PostMapping("/api/payment/{paymentMethod}/order/{orderId}")
-    public ResponseEntity<PaymentLinkResponse> paymentHandler(
-            @PathVariable PaymentMethod paymentMethod,
+    @GetMapping("/{orderId}/success")
+    public ResponseEntity<ApiResponse> paymentSuccessRedirect(
             @PathVariable Long orderId,
-            @RequestHeader("Authorization") String jwt) throws Exception {
+            @RequestParam("razorpay_payment_id") String razorpayPaymentId
+    ) throws OrderException {
 
-        User user = userService.findUserProfileByJwt(jwt);
+        Order order = orderService.findOrderById(orderId);
+        order.getPaymentDetails().setPaymentId(razorpayPaymentId);
+        order.getPaymentDetails().setStatus(PaymentStatus.COMPLETED);
+        order.setOrderStatus(com.aditi.dripyard.domain.OrderStatus.PLACED);
 
-        PaymentLinkResponse paymentResponse;
+        // Create a transaction record for this successful order
+        transactionService.createTransaction(order);
 
-        PaymentOrder order= paymentService.getPaymentOrderById(orderId);
-
-//        if(paymentMethod.equals(PaymentMethod.RAZORPAY)){
-//            paymentResponse=paymentService.createRazorpayPaymentLink(user,
-//                    order.getAmount(),
-//                    order.getId());
-//        }
-//        else{
-//            paymentResponse=paymentService.createStripePaymentLink(user,
-//                    order.getAmount(),
-//                    order.getId());
-//        }
-
-        return new ResponseEntity<>(null, HttpStatus.CREATED);
-    }
-
-
-    @GetMapping("/api/payment/{paymentId}")
-    public ResponseEntity<ApiResponse> paymentSuccessHandler(
-            @PathVariable String paymentId,
-            @RequestParam String paymentLinkId,
-            @RequestHeader("Authorization") String jwt) throws Exception {
-
-        User user = userService.findUserProfileByJwt(jwt);
-
-        PaymentLinkResponse paymentResponse;
-
-        PaymentOrder paymentOrder= paymentService
-                .getPaymentOrderByPaymentId(paymentLinkId);
-
-        boolean paymentSuccess = paymentService.ProceedPaymentOrder(
-                paymentOrder,
-                paymentId,
-                paymentLinkId
-        );
-        if(paymentSuccess){
-            for(Order order:paymentOrder.getOrders()){
-                transactionService.createTransaction(order);
-                Seller seller=sellerService.getSellerById(order.getSellerId());
-                SellerReport report=sellerReportService.getSellerReport(seller);
-                report.setTotalOrders(report.getTotalOrders()+1);
-                report.setTotalEarnings(report.getTotalEarnings()+order.getTotalSellingPrice());
-                report.setTotalSales(report.getTotalSales()+order.getOrderItems().size());
-                sellerReportService.updateSellerReport(report);
-            }
-            Cart cart=cartRepository.findByUserId(user.getId());
-            cart.setCouponPrice(0);
-            cart.setCouponCode(null);
-//        Set<CartItem> items=cart.getCartItems();
-//        cartItemRepository.deleteAll(items);
-//        cart.setCartItems(new HashSet<>());
-            cartRepository.save(cart);
-
-        }
-
-        ApiResponse res = new ApiResponse();
-        res.setMessage("Payment successful");
-        res.setStatus(true);
-
-        return new ResponseEntity<>(res, HttpStatus.CREATED);
+        ApiResponse res = new ApiResponse("Your Order is Placed Successfully", true);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

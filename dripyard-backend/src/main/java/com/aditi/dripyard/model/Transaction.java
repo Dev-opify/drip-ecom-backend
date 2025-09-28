@@ -1,18 +1,15 @@
+// dripyard-backend/src/main/java/com/aditi/dripyard/model/Transaction.java
 package com.aditi.dripyard.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+import lombok.*;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
-@AllArgsConstructor
+@Entity
 @Getter
 @Setter
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Transaction {
 
     @Id
@@ -25,8 +22,7 @@ public class Transaction {
     @OneToOne
     private Order order;
 
-    @ManyToOne
-    private Seller seller;
+    // The 'seller' field has been removed.
 
-    private LocalDateTime date= LocalDateTime.now();
+    private LocalDateTime date = LocalDateTime.now();
 }

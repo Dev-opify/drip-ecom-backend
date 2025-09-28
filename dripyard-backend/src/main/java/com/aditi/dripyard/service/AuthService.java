@@ -1,6 +1,5 @@
 package com.aditi.dripyard.service;
 
-import com.aditi.dripyard.exception.SellerException;
 import com.aditi.dripyard.exception.UserException;
 import com.aditi.dripyard.request.LoginRequest;
 import com.aditi.dripyard.request.SignupRequest;
@@ -11,7 +10,7 @@ public interface AuthService {
 
     void sentLoginOtp(String email) throws UserException, MailerSendException;
 
-    String createUser(SignupRequest req) throws SellerException;
+    String createUser(SignupRequest req) throws UserException; // Changed to UserException
 
-    AuthResponse signin(LoginRequest req) throws SellerException;
+    AuthResponse signin(LoginRequest req) throws UserException; // Changed to UserException
 }

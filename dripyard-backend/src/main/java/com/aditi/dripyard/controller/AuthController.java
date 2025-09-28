@@ -1,7 +1,6 @@
 package com.aditi.dripyard.controller;
 
 import com.aditi.dripyard.domain.USER_ROLE;
-import com.aditi.dripyard.exception.SellerException;
 import com.aditi.dripyard.exception.UserException;
 import com.aditi.dripyard.model.VerificationCode;
 import com.aditi.dripyard.request.LoginRequest;
@@ -9,6 +8,7 @@ import com.aditi.dripyard.request.SignupRequest;
 import com.aditi.dripyard.response.ApiResponse;
 import com.aditi.dripyard.response.AuthResponse;
 import com.aditi.dripyard.service.AuthService;
+import com.mailersend.sdk.exceptions.MailerSendException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,55 +23,22 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/sent/login-signup-otp")
-    public ResponseEntity<ApiResponse> sentLoginOtp(@RequestBody VerificationCode req)
-            throws UserException {
-        try {
-            authService.sentLoginOtp(req.getEmail());
-
-            ApiResponse res = new ApiResponse();
-            res.setMessage("OTP sent");
-            res.setStatus(true);
-            return new ResponseEntity<>(res, HttpStatus.CREATED);
-        } catch (Exception e) {
-            ApiResponse res = new ApiResponse();
-            res.setMessage("Failed to send OTP: " + e.getMessage());
-            res.setStatus(false);
-            return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<ApiResponse> sentLoginOtp(@RequestBody VerificationCode req) throws UserException, MailerSendException {
+        authService.sentLoginOtp(req.getEmail());
+        ApiResponse res = new ApiResponse("OTP sent", true);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> createUserHandler(@Valid @RequestBody SignupRequest req)
-            throws SellerException {
-        try {
-            String token = authService.createUser(req);
-
-            AuthResponse authResponse = new AuthResponse();
-            authResponse.setJwt(token);
-            authResponse.setMessage("Register Success");
-            authResponse.setRole(USER_ROLE.ROLE_CUSTOMER);
-            authResponse.setStatus(true);
-
-            return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
-        } catch (Exception e) {
-            AuthResponse authResponse = new AuthResponse();
-            authResponse.setMessage("Registration failed: " + e.getMessage());
-            authResponse.setStatus(false);
-            return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<AuthResponse> createUserHandler(@Valid @RequestBody SignupRequest req) throws UserException { // Changed to UserException
+        String token = authService.createUser(req);
+        AuthResponse authResponse = new AuthResponse(token, true, "Register Success", USER_ROLE.ROLE_CUSTOMER);
+        return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<AuthResponse> signin(@RequestBody LoginRequest loginRequest)
-            throws SellerException {
-        try {
-            AuthResponse authResponse = authService.signin(loginRequest);
-            return new ResponseEntity<>(authResponse, HttpStatus.OK);
-        } catch (Exception e) {
-            AuthResponse authResponse = new AuthResponse();
-            authResponse.setMessage("Login failed: " + e.getMessage());
-            authResponse.setStatus(false);
-            return new ResponseEntity<>(authResponse, HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<AuthResponse> signin(@RequestBody LoginRequest loginRequest) throws UserException { // Changed to UserException
+        AuthResponse authResponse = authService.signin(loginRequest);
+        return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
 }

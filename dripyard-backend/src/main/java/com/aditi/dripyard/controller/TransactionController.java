@@ -1,48 +1,36 @@
+// dripyard-backend/src/main/java/com/aditi/dripyard/controller/TransactionController.java
 package com.aditi.dripyard.controller;
 
-import com.aditi.dripyard.exception.SellerException;
-import com.aditi.dripyard.model.Order;
-import com.aditi.dripyard.model.Seller;
+import com.aditi.dripyard.exception.UserException;
 import com.aditi.dripyard.model.Transaction;
-import com.aditi.dripyard.service.SellerService;
+import com.aditi.dripyard.model.User;
 import com.aditi.dripyard.service.TransactionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.aditi.dripyard.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/transactions")
+@RequestMapping("/api")
+@RequiredArgsConstructor
 public class TransactionController {
 
     private final TransactionService transactionService;
-    private final SellerService sellerService;
+    private final UserService userService;
 
-    @Autowired
-    public TransactionController(TransactionService transactionService, SellerService sellerService) {
-        this.transactionService = transactionService;
-        this.sellerService = sellerService;
-    }
-
-    @PostMapping
-    public ResponseEntity<Transaction> createTransaction(@RequestBody Order order) {
-        Transaction transaction = transactionService.createTransaction(order);
-        return ResponseEntity.ok(transaction);
-    }
-
-    @GetMapping("/seller")
-    public ResponseEntity<List<Transaction>> getTransactionBySeller(
-            @RequestHeader("Authorization") String jwt) throws SellerException {
-        Seller seller=sellerService.getSellerProfile(jwt);
-
-        List<Transaction> transactions = transactionService.getTransactionBySeller(seller);
+    // Endpoint for admins to view all transactions
+    @GetMapping("/admin/transactions")
+    public ResponseEntity<List<Transaction>> getAllTransactions() {
+        List<Transaction> transactions = transactionService.getAllTransactions();
         return ResponseEntity.ok(transactions);
     }
 
-    @GetMapping
-    public ResponseEntity<List<Transaction>> getAllTransactions() {
-        List<Transaction> transactions = transactionService.getAllTransactions();
+    // Endpoint for users to view their own transactions
+    @GetMapping("/users/transactions")
+    public ResponseEntity<List<Transaction>> getUsersTransactions(@RequestHeader("Authorization") String jwt) throws UserException {
+        User user = userService.findUserProfileByJwt(jwt);
+        List<Transaction> transactions = transactionService.getUsersTransactions(user.getId());
         return ResponseEntity.ok(transactions);
     }
 }

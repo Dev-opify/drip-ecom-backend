@@ -84,5 +84,19 @@ public class CartServiceImplementation implements CartService {
 
 		return isPresent;
 	}
+	@Override
+	public void clearCart(Long userId) {
+		Cart cart = cartRepository.findByUserId(userId);
+		if (cart != null) {
+			cart.getCartItems().clear();
+			cart.setTotalItem(0);
+			cart.setTotalMrpPrice(0);
+			cart.setTotalSellingPrice(0);
+			cart.setDiscount(0);
+			cart.setCouponCode(null);
+			cart.setCouponPrice(0);
+			cartRepository.save(cart);
+		}
+	}
 
 }

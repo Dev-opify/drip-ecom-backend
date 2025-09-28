@@ -1,10 +1,9 @@
 package com.aditi.dripyard.service.impl;
 
-
 import com.aditi.dripyard.exception.ProductException;
 import com.aditi.dripyard.model.Category;
 import com.aditi.dripyard.model.Product;
-import com.aditi.dripyard.model.Seller;
+import com.aditi.dripyard.model.User; // Changed from Seller to User
 import com.aditi.dripyard.repository.CategoryRepository;
 import com.aditi.dripyard.repository.ProductRepository;
 import com.aditi.dripyard.request.CreateProductRequest;
@@ -27,53 +26,45 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-
     private final ProductRepository productRepository;
-    
     private final CategoryRepository categoryRepository;
 
-
     @Override
-    public Product createProduct(CreateProductRequest req,
-
-                                 Seller seller
-                                 ) throws ProductException {
-
-
-
+    public Product createProduct(CreateProductRequest req, User user) throws ProductException {
+        // This logic is correct for the new single-vendor (admin) system.
         int discountPercentage = calculateDiscountPercentage(req.getMrpPrice(), req.getSellingPrice());
 
-        Category category1=categoryRepository.findByCategoryId(req.getCategory());
-        if(category1==null){
-            Category category=new Category();
+        Category category1 = categoryRepository.findByCategoryId(req.getCategory());
+        if (category1 == null) {
+            Category category = new Category();
             category.setCategoryId(req.getCategory());
             category.setLevel(1);
-            category.setName(req.getCategory().replace("_"," "));
-            category1=categoryRepository.save(category);
+            category.setName(req.getCategory().replace("_", " "));
+            category1 = categoryRepository.save(category);
         }
 
-        Category category2=categoryRepository.findByCategoryId(req.getCategory2());
-        if(category2==null){
-            Category category=new Category();
+        Category category2 = categoryRepository.findByCategoryId(req.getCategory2());
+        if (category2 == null) {
+            Category category = new Category();
             category.setCategoryId(req.getCategory2());
             category.setLevel(2);
             category.setParentCategory(category1);
-            category.setName(req.getCategory2().replace("_"," "));
-            category2=categoryRepository.save(category);
+            category.setName(req.getCategory2().replace("_", " "));
+            category2 = categoryRepository.save(category);
         }
-        Category category3=categoryRepository.findByCategoryId(req.getCategory3());
-        if(category3==null){
-            Category category=new Category();
+
+        Category category3 = categoryRepository.findByCategoryId(req.getCategory3());
+        if (category3 == null) {
+            Category category = new Category();
             category.setCategoryId(req.getCategory3());
             category.setLevel(3);
             category.setParentCategory(category2);
-            category.setName(req.getCategory3().replace("_"," "));
-            category3=categoryRepository.save(category);
+            category.setName(req.getCategory3().replace("_", " "));
+            category3 = categoryRepository.save(category);
         }
-        
-        Product product=new Product();
 
-        product.setSeller(seller);
+        Product product = new Product();
+        product.setUser(user); // Set the user (admin) as the owner
         product.setCategory(category3);
         product.setTitle(req.getTitle());
         product.setColor(req.getColor());
@@ -84,9 +75,26 @@ public class ProductServiceImpl implements ProductService {
         product.setMrpPrice(req.getMrpPrice());
         product.setSizes(req.getSizes());
         product.setCreatedAt(LocalDateTime.now());
+        product.setQuantity(100); // Default quantity, can be adjusted
 
         return productRepository.save(product);
     }
+
+    // ... (calculateDiscountPercentage, addImageToProduct, deleteProduct, updateProduct, etc. remain the same)
+
+    @Override
+    public List<Product> getProductsByAdmin(Long userId) {
+        return productRepository.findByUserId(userId);
+    }
+
+    // --- NEW METHOD ---
+    // Added for the AdminController to fetch all products for management.
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    // The rest of the methods remain the same...
 
     public static int calculateDiscountPercentage(double mrpPrice, double sellingPrice) {
         if (mrpPrice <= 0) {
@@ -114,7 +122,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(Long productId) throws ProductException {
-        Product product=findProductById(productId);
+        Product product = findProductById(productId);
         productRepository.delete(product);
 
     }
@@ -137,7 +145,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product findProductById(Long id) throws ProductException {
         return productRepository.findById(id)
-                .orElseThrow(()-> new ProductException("product not found"));
+                .orElseThrow(() -> new ProductException("product not found"));
     }
 
     @Override
@@ -148,25 +156,24 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<Product> getAllProduct(String category,
                                        String brand,
-                                       String color,
-                                       String size,
+                                       String colors,
+                                       String sizes,
                                        Integer minPrice,
                                        Integer maxPrice,
                                        Integer minDiscount,
                                        String sort,
                                        String stock,
-                                       Integer pageNumber) {
+                                       Integer pageNumber,
+                                       Integer pageSize) {
         Specification<Product> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
 
             if (category != null) {
                 Join<Product, Category> categoryJoin = root.join("category");
-//                predicates.add(criteriaBuilder.equal(categoryJoin.get("categoryId"), category));
-//                predicates.add(criteriaBuilder.equal(categoryJoin.get("parentCategory").get("categoryId"), category));
                 Predicate categoryPredicate = criteriaBuilder.or(
-                        criteriaBuilder.equal(categoryJoin.get("categoryId"), category),  // Match categoryId
-                        criteriaBuilder.equal(categoryJoin.get("parentCategory").get("categoryId"), category)  // Match parentCategory.categoryId
+                        criteriaBuilder.equal(categoryJoin.get("categoryId"), category),
+                        criteriaBuilder.equal(categoryJoin.get("parentCategory").get("categoryId"), category)
                 );
 
 
@@ -174,14 +181,13 @@ public class ProductServiceImpl implements ProductService {
             }
 
 
-            if (color != null && !color.isEmpty()) {
-                System.out.println("color "+color);
-                predicates.add(criteriaBuilder.equal(root.get("color"), color));
+            if (colors != null && !colors.isEmpty()) {
+                System.out.println("color " + colors);
+                predicates.add(criteriaBuilder.equal(root.get("color"), colors));
             }
 
-            // Filter by size (single value)
-            if (size != null && !size.isEmpty()) {
-                predicates.add(criteriaBuilder.equal(root.get("size"), size));
+            if (sizes != null && !sizes.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("size"), sizes));
             }
 
             if (minPrice != null) {
@@ -209,13 +215,13 @@ public class ProductServiceImpl implements ProductService {
         if (sort != null && !sort.isEmpty()) {
             pageable = switch (sort) {
                 case "price_low" ->
-                        PageRequest.of(pageNumber != null ? pageNumber : 0, 10, Sort.by("sellingPrice").ascending());
+                        PageRequest.of(pageNumber != null ? pageNumber : 0, pageSize, Sort.by("sellingPrice").ascending());
                 case "price_high" ->
-                        PageRequest.of(pageNumber != null ? pageNumber : 0, 10, Sort.by("sellingPrice").descending());
-                default -> PageRequest.of(pageNumber != null ? pageNumber : 0, 10, Sort.unsorted());
+                        PageRequest.of(pageNumber != null ? pageNumber : 0, pageSize, Sort.by("sellingPrice").descending());
+                default -> PageRequest.of(pageNumber != null ? pageNumber : 0, pageSize, Sort.unsorted());
             };
         } else {
-            pageable = PageRequest.of(pageNumber != null ? pageNumber : 0, 10, Sort.unsorted());
+            pageable = PageRequest.of(pageNumber != null ? pageNumber : 0, pageSize, Sort.unsorted());
         }
 
 
@@ -225,10 +231,5 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> recentlyAddedProduct() {
         return List.of();
-    }
-
-    @Override
-    public List<Product> getProductBySellerId(Long sellerId) {
-        return productRepository.findBySellerId(sellerId);
     }
 }
