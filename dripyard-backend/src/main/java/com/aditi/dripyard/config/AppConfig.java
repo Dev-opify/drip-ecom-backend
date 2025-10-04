@@ -35,7 +35,8 @@ public class AppConfig {
                                 .requestMatchers("/api/products/*/reviews").permitAll()
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                                 .requestMatchers("/api/images/**").permitAll()
-
+                                .requestMatchers("/api/webhooks/**").permitAll()
+                                .requestMatchers("/api/payments/*/success").permitAll()
                                 .requestMatchers("/api/test/**").permitAll()
 
                                 .requestMatchers("/api/**").authenticated()

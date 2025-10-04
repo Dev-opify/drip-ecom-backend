@@ -27,6 +27,7 @@ public class Product {
     private int quantity;
     private String color;
 
+
     @ElementCollection
     private List<String> images = new ArrayList<>();
 

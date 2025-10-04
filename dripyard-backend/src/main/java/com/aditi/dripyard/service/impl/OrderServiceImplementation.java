@@ -36,7 +36,7 @@ public class OrderServiceImplementation implements OrderService {
 		order.setUser(user);
 		order.setShippingAddress(shippAddress);
 		order.setOrderDate(LocalDateTime.now());
-		order.setOrderStatus(OrderStatus.PLACED); // A more appropriate initial status
+		order.setOrderStatus(OrderStatus.PENDING);
 		order.getPaymentDetails().setStatus(PaymentStatus.PENDING);
 		order.setOrderId(UUID.randomUUID().toString());
 
@@ -107,6 +107,16 @@ public class OrderServiceImplementation implements OrderService {
 			throw new OrderException("You are not authorized to cancel this order.");
 		}
 		order.setOrderStatus(OrderStatus.CANCELLED);
+		return orderRepository.save(order);
+	}
+
+	@Override
+	public Order findOrderByPaymentLinkReferenceId(String referenceId) {
+		return orderRepository.findByPaymentDetailsRazorPaymentLinkReferenceId(referenceId);
+	}
+
+	@Override
+	public Order saveOrder(Order order) {
 		return orderRepository.save(order);
 	}
 }

@@ -12,4 +12,6 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
     List<Order> findBySellerIdOrderByOrderDateDesc(Long sellerId);
     List<Order> findBySellerIdAndOrderDateBetween(Long sellerId,LocalDateTime startDate, LocalDateTime endDate);
 
+    // Correlate Razorpay webhook using the payment link reference id we set to the backend order id
+    Order findByPaymentDetailsRazorPaymentLinkReferenceId(String referenceId);
 }

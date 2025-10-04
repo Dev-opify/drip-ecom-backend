@@ -32,6 +32,9 @@ public class PaymentController {
         order.getPaymentDetails().setStatus(PaymentStatus.COMPLETED);
         order.setOrderStatus(com.aditi.dripyard.domain.OrderStatus.PLACED);
 
+        // Persist order updates
+        orderService.saveOrder(order);
+
         // Create a transaction record for this successful order
         transactionService.createTransaction(order);
 
