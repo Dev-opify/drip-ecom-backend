@@ -26,10 +26,4 @@ public interface OrderService {
 	void deleteOrder(Long orderId) throws OrderException;
 
 	Order cancelOrder(Long orderId, User user) throws OrderException;
-
-	// Correlate webhook by payment link reference id
-	Order findOrderByPaymentLinkReferenceId(String referenceId);
-
-	// Persist order changes (e.g., after payment success)
-	Order saveOrder(Order order);
 }

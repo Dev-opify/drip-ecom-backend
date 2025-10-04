@@ -54,6 +54,16 @@ public class WishlistController {
 
     }
 
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<com.aditi.dripyard.response.ApiResponse> removeProduct(
+            @PathVariable Long productId,
+            @RequestHeader("Authorization") String jwt) throws ProductException, UserException, WishlistNotFoundException {
+        Product product = productService.findProductById(productId);
+        User user = userService.findUserProfileByJwt(jwt);
+        wishlistService.removeProductFromWishlist(user, product);
+        return ResponseEntity.ok(new com.aditi.dripyard.response.ApiResponse("Removed from wishlist", true));
+    }
+
 }
 
 

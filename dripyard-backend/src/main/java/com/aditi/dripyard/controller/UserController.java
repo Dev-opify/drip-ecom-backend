@@ -24,7 +24,15 @@ public class UserController {
         System.out.println("/api/users/profile");
         User user=userService.findUserProfileByJwt(jwt);
         return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
-    }
+}
 
+    @PutMapping("/profile")
+    public ResponseEntity<User> updateUserProfileHandler(
+            @RequestHeader("Authorization") String jwt,
+            @RequestBody com.aditi.dripyard.request.UpdateProfileRequest req
+    ) throws UserException {
+        User updated = userService.updateUserProfileByJwt(jwt, req);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
 
 }

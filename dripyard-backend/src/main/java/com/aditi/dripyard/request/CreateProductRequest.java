@@ -24,6 +24,8 @@ public class CreateProductRequest {
     private String brand;
 
     private String color;
+    
+    private int quantity;
 
     @Column(length = 5000)
     private List<String> images;

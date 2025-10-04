@@ -68,6 +68,7 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(category3);
         product.setTitle(req.getTitle());
         product.setColor(req.getColor());
+        product.setBrand(req.getBrand());
         product.setDescription(req.getDescription());
         product.setDiscountPercent(discountPercentage);
         product.setSellingPrice(req.getSellingPrice());
@@ -75,7 +76,7 @@ public class ProductServiceImpl implements ProductService {
         product.setMrpPrice(req.getMrpPrice());
         product.setSizes(req.getSizes());
         product.setCreatedAt(LocalDateTime.now());
-        product.setQuantity(100); // Default quantity, can be adjusted
+        product.setQuantity(req.getQuantity() > 0 ? req.getQuantity() : 100); // Use request quantity or default to 100
 
         return productRepository.save(product);
     }
@@ -187,7 +188,7 @@ public class ProductServiceImpl implements ProductService {
             }
 
             if (sizes != null && !sizes.isEmpty()) {
-                predicates.add(criteriaBuilder.equal(root.get("size"), sizes));
+                predicates.add(criteriaBuilder.equal(root.get("Sizes"), sizes));
             }
 
             if (minPrice != null) {

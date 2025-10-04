@@ -24,6 +24,18 @@ public class CartServiceImplementation implements CartService {
 
 	public Cart findUserCart(User user) {
 		Cart cart =	cartRepository.findByUserId(user.getId());
+		
+		// Create cart if it doesn't exist
+		if (cart == null) {
+			cart = new Cart();
+			cart.setUser(user);
+			cart.setTotalMrpPrice(0);
+			cart.setTotalSellingPrice(0);
+			cart.setTotalItem(0);
+			cart.setDiscount(0);
+			cart.setCouponPrice(0);
+			cart = cartRepository.save(cart);
+		}
 
 		int totalPrice=0;
 		int totalDiscountedPrice=0;

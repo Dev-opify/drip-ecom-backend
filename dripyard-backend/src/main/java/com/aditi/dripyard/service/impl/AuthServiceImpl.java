@@ -115,7 +115,9 @@ public class AuthServiceImpl implements AuthService {
         String username = req.getEmail();
         String otp = req.getOtp();
 
+        // Use OTP authentication for all users (both admin and customer)
         Authentication authentication = authenticate(username, otp);
+        
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String token = jwtProvider.generateToken(authentication);
