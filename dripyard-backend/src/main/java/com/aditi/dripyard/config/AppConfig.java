@@ -6,7 +6,6 @@ import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,7 +22,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebSecurity
-
+@EnableWebMvc
 public class AppConfig {
 
     @Bean
@@ -31,20 +30,22 @@ public class AppConfig {
 
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(Authorize -> Authorize
-                		.requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
-                                // Public endpoints
-                                .requestMatchers(HttpMethod.GET, "/api/images/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/products", "/api/products/**").permitAll()
+//                		.requestMatchers("/api/admin/**").hasAnyRole("SHOP_OWNER","ADMIN")
+                                .requestMatchers("/api/images/**").permitAll()
                                 .requestMatchers("/api/products/*/reviews").permitAll()
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                                .requestMatchers("/api/images/**").permitAll()
+                                .requestMatchers("/api/webhooks/**").permitAll()
+                                .requestMatchers("/api/payments/*/success").permitAll()
                                 .requestMatchers("/api/test/**").permitAll()
-                                // Everything else under /api requires authentication
+
                                 .requestMatchers("/api/**").authenticated()
                                 .anyRequest().permitAll()
                 )
                 .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+
 
         return http.build();
 
@@ -59,10 +60,8 @@ public class AppConfig {
                 cfg.setAllowedOrigins(Arrays.asList(
                         "http://localhost:3000",
                         "http://127.0.0.1:5500",
-                        "http://localhost:5500",
-                        "https://your-production-frontend-url.com"));
+                        "https://dripyardwebsite.vercel.app"));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
-                // Frontend sends credentials: 'omit', so this can be false, but leaving true is fine if you need auth elsewhere
                 cfg.setAllowCredentials(true);
                 cfg.setAllowedHeaders(Collections.singletonList("*"));
                 cfg.setExposedHeaders(Arrays.asList("Authorization"));

@@ -26,7 +26,7 @@ public class Product {
     private int discountPercent;
     private int quantity;
     private String color;
-    private String brand;
+
 
     @ElementCollection
     private List<String> images = new ArrayList<>();
@@ -41,7 +41,7 @@ public class Product {
     private User user;
 
     private LocalDateTime createdAt;
-    private String sizes;
+    private String Sizes;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();

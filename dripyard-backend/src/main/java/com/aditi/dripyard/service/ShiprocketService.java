@@ -24,7 +24,7 @@ public class ShiprocketService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public String authenticate(String email, String password) {
-        String url = baseUrl + "/auth/login";
+        String url = baseUrl + "/external/auth/login";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -36,7 +36,7 @@ public class ShiprocketService {
     }
 
     public ShiprocketOrderResponseDto createOrder(String token, ShiprocketOrderRequestDto orderRequest) throws Exception {
-        String url = baseUrl + "/orders/create/adhoc";
+        String url = baseUrl + "/external/orders/create/adhoc";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(token);

@@ -1,17 +1,18 @@
 package com.aditi.dripyard.request;
 
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class LoginRequest {
 
     private String email;
     private String password;
     private String otp;
+
 
 }

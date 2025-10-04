@@ -50,25 +50,5 @@ public class UserServiceImplementation implements UserService {
 			return user;
 		}
 		throw new UserException("User does not exist with username " + username);
-}
-
-    @Override
-    public User updateUserProfileByJwt(String jwt, com.aditi.dripyard.request.UpdateProfileRequest req) throws UserException {
-        String email = jwtProvider.getEmailFromJwtToken(jwt);
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new UserException("User does not exist with email " + email);
-        }
-        if (req.getFullName() != null && !req.getFullName().isBlank()) {
-            user.setFullName(req.getFullName().trim());
-        }
-        if (req.getMobile() != null && !req.getMobile().isBlank()) {
-            user.setMobile(req.getMobile().trim());
-        }
-        if (req.getEmail() != null && !req.getEmail().isBlank()) {
-            // Optionally validate uniqueness/permission here
-            user.setEmail(req.getEmail().trim());
-        }
-        return userRepository.save(user);
-    }
+	}
 }

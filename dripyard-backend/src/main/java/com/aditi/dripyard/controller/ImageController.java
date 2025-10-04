@@ -26,20 +26,12 @@ public class ImageController {
     @PostMapping("/upload")
     public ResponseEntity<String> uploadImage(
             @RequestParam("file") MultipartFile file,
-            @RequestParam(value = "productId", required = false) String productId) throws IOException, ProductException {
+            @RequestParam("productId") Long productId) throws IOException, ProductException {
 
         String fileKey = UUID.randomUUID() + "_" + file.getOriginalFilename();
         storageService.uploadFile(fileKey, file.getInputStream(), file.getSize(), file.getContentType());
 
-        // If productId is provided and not "temp", add image to existing product
-        if (productId != null && !productId.equals("temp")) {
-            try {
-                Long pid = Long.parseLong(productId);
-                productService.addImageToProduct(pid, fileKey);
-            } catch (NumberFormatException e) {
-                // Invalid productId format, just upload the image without associating
-            }
-        }
+        productService.addImageToProduct(productId, fileKey);
 
         return ResponseEntity.ok("Uploaded with key: " + fileKey);
     }

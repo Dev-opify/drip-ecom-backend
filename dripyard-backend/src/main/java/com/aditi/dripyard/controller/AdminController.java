@@ -35,12 +35,6 @@ public class AdminController {
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
-    @GetMapping("/debug")
-    public ResponseEntity<String> debugAuth(@RequestHeader("Authorization") String jwt) throws UserException {
-        User user = userService.findUserProfileByJwt(jwt);
-        return new ResponseEntity<>("User: " + user.getEmail() + ", Role: " + user.getRole(), HttpStatus.OK);
-    }
-
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productService.getAllProducts();

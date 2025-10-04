@@ -1,12 +1,10 @@
 package com.aditi.dripyard.request;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class SignupRequest {
     private String fullName;
     private String email;
