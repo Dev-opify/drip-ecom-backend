@@ -26,4 +26,10 @@ public interface OrderService {
 	void deleteOrder(Long orderId) throws OrderException;
 
 	Order cancelOrder(Long orderId, User user) throws OrderException;
+
+	// Method to find order by Razorpay order ID (needed for webhook processing)
+	Order findOrderByRazorpayOrderId(String razorpayOrderId);
+
+	// Method to save order (needed for webhook updates)
+	Order saveOrder(Order order);
 }

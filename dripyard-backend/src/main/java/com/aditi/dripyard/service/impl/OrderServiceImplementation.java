@@ -109,4 +109,14 @@ public class OrderServiceImplementation implements OrderService {
 		order.setOrderStatus(OrderStatus.CANCELLED);
 		return orderRepository.save(order);
 	}
+
+	@Override
+	public Order findOrderByRazorpayOrderId(String razorpayOrderId) {
+		return orderRepository.findByPaymentDetailsRazorPaymentLinkReferenceId(razorpayOrderId);
+	}
+
+	@Override
+	public Order saveOrder(Order order) {
+		return orderRepository.save(order);
+	}
 }
