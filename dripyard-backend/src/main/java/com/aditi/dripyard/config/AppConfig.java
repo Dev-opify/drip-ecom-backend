@@ -59,8 +59,8 @@ public class AppConfig {
                 CorsConfiguration cfg = new CorsConfiguration();
                 cfg.setAllowedOrigins(Arrays.asList(
                         "http://localhost:3000",
-                        "http://127.0.0.1:5500", // Your local frontend URL
-                        "https://your-production-frontend-url.com"));
+                        "http://127.0.0.1:5500",
+                        "https://dripyardwebsite.vercel.app"));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
                 cfg.setAllowedHeaders(Collections.singletonList("*"));
