@@ -47,8 +47,7 @@ public class PaymentServiceImpl implements PaymentService {
             paymentLinkRequest.put("reminder_enable", true);
 
             // This URL is where the user will be redirected after payment
-            // Update this to your frontend's payment success page
-            paymentLinkRequest.put("callback_url", "https://skillful-nature-production.up.railway.app/api/payments/" + orderId + "/success");
+            paymentLinkRequest.put("callback_url", "http://localhost:3000/payment-success/" + orderId); // Assuming a frontend URL
             paymentLinkRequest.put("callback_method", "get");
 
             PaymentLink payment = razorpay.paymentLink.create(paymentLinkRequest);
