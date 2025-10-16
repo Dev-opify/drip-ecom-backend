@@ -6,6 +6,10 @@ import com.aditi.dripyard.model.Product;
 import com.aditi.dripyard.model.User; // Changed from Seller to User
 import com.aditi.dripyard.repository.CategoryRepository;
 import com.aditi.dripyard.repository.ProductRepository;
+import com.aditi.dripyard.repository.WishlistRepository;
+import com.aditi.dripyard.repository.CartItemRepository;
+import com.aditi.dripyard.model.Wishlist;
+import com.aditi.dripyard.model.CartItem;
 import com.aditi.dripyard.request.CreateProductRequest;
 import com.aditi.dripyard.service.ProductService;
 import jakarta.persistence.criteria.Join;
@@ -28,54 +32,77 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final WishlistRepository wishlistRepository;
+    private final CartItemRepository cartItemRepository;
 
     @Override
     public Product createProduct(CreateProductRequest req, User user) throws ProductException {
         // This logic is correct for the new single-vendor (admin) system.
         int discountPercentage = calculateDiscountPercentage(req.getMrpPrice(), req.getSellingPrice());
 
-        Category category1 = categoryRepository.findByCategoryId(req.getCategory());
-        if (category1 == null) {
-            Category category = new Category();
-            category.setCategoryId(req.getCategory());
-            category.setLevel(1);
-            category.setName(req.getCategory().replace("_", " "));
-            category1 = categoryRepository.save(category);
+        // Extract category names from the nested structure
+        String category1Name = req.getCategory() != null ? req.getCategory().getName() : null;
+        String category2Name = req.getCategory() != null && req.getCategory().getParentCategory() != null 
+                ? req.getCategory().getParentCategory().getName() : null;
+        String category3Name = req.getCategory() != null && req.getCategory().getParentCategory() != null 
+                && req.getCategory().getParentCategory().getParentCategory() != null
+                ? req.getCategory().getParentCategory().getParentCategory().getName() : null;
+
+        // Create or find category hierarchy
+        Category topCategory = null;
+        if (category3Name != null && !category3Name.isEmpty()) {
+            String category3Id = category3Name.replace(" ", "_");
+            topCategory = categoryRepository.findByCategoryId(category3Id);
+            if (topCategory == null) {
+                Category category = new Category();
+                category.setCategoryId(category3Id);
+                category.setLevel(1);
+                category.setName(category3Name);
+                topCategory = categoryRepository.save(category);
+            }
         }
 
-        Category category2 = categoryRepository.findByCategoryId(req.getCategory2());
-        if (category2 == null) {
-            Category category = new Category();
-            category.setCategoryId(req.getCategory2());
-            category.setLevel(2);
-            category.setParentCategory(category1);
-            category.setName(req.getCategory2().replace("_", " "));
-            category2 = categoryRepository.save(category);
+        Category midCategory = null;
+        if (category2Name != null && !category2Name.isEmpty()) {
+            String category2Id = category2Name.replace(" ", "_");
+            midCategory = categoryRepository.findByCategoryId(category2Id);
+            if (midCategory == null) {
+                Category category = new Category();
+                category.setCategoryId(category2Id);
+                category.setLevel(2);
+                category.setParentCategory(topCategory);
+                category.setName(category2Name);
+                midCategory = categoryRepository.save(category);
+            }
         }
 
-        Category category3 = categoryRepository.findByCategoryId(req.getCategory3());
-        if (category3 == null) {
-            Category category = new Category();
-            category.setCategoryId(req.getCategory3());
-            category.setLevel(3);
-            category.setParentCategory(category2);
-            category.setName(req.getCategory3().replace("_", " "));
-            category3 = categoryRepository.save(category);
+        Category finalCategory = null;
+        if (category1Name != null && !category1Name.isEmpty()) {
+            String category1Id = category1Name.replace(" ", "_");
+            finalCategory = categoryRepository.findByCategoryId(category1Id);
+            if (finalCategory == null) {
+                Category category = new Category();
+                category.setCategoryId(category1Id);
+                category.setLevel(3);
+                category.setParentCategory(midCategory != null ? midCategory : topCategory);
+                category.setName(category1Name);
+                finalCategory = categoryRepository.save(category);
+            }
         }
 
         Product product = new Product();
         product.setUser(user); // Set the user (admin) as the owner
-        product.setCategory(category3);
+        product.setCategory(finalCategory);
         product.setTitle(req.getTitle());
         product.setColor(req.getColor());
         product.setDescription(req.getDescription());
         product.setDiscountPercent(discountPercentage);
         product.setSellingPrice(req.getSellingPrice());
-        product.setImages(req.getImages());
+        product.setImages(req.getImages() != null ? req.getImages() : new ArrayList<>());
         product.setMrpPrice(req.getMrpPrice());
         product.setSizes(req.getSizes());
         product.setCreatedAt(LocalDateTime.now());
-        product.setQuantity(100); // Default quantity, can be adjusted
+        product.setQuantity(req.getQuantity() > 0 ? req.getQuantity() : 100); // Use provided quantity or default
 
         return productRepository.save(product);
     }
@@ -114,17 +141,66 @@ public class ProductServiceImpl implements ProductService {
         if (images == null) {
             images = new ArrayList<>();
         }
-        images.add(imageKey);
-        product.setImages(images);
-        productRepository.save(product);
+        // Avoid duplicates
+        if (!images.contains(imageKey)) {
+            images.add(imageKey);
+            product.setImages(images);
+            productRepository.save(product);
+        }
+    }
+
+    @Override
+    public void removeImageFromProduct(Long productId, String imageKey) throws ProductException {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductException("Product not found"));
+        List<String> images = product.getImages();
+        if (images != null && images.remove(imageKey)) {
+            product.setImages(images);
+            productRepository.save(product);
+        }
     }
 
 
     @Override
     public void deleteProduct(Long productId) throws ProductException {
         Product product = findProductById(productId);
-        productRepository.delete(product);
-
+        
+        try {
+            System.out.println("Starting product deletion process for product ID: " + productId);
+            
+            // Remove product from all wishlists first
+            removeProductFromAllWishlists(productId);
+            System.out.println("Product removed from wishlists");
+            
+            // Remove product from all carts
+            removeProductFromAllCarts(productId);
+            System.out.println("Product removed from carts");
+            
+            // Try to delete the product
+            productRepository.delete(product);
+            System.out.println("Product successfully deleted from database");
+            
+        } catch (Exception e) {
+            System.err.println("Error deleting product " + productId + ": " + e.getMessage());
+            
+            // Check if it's a foreign key constraint error (product is in order history)
+            String errorMessage = e.getMessage();
+            if (errorMessage != null && (errorMessage.contains("foreign key constraint") || 
+                                        errorMessage.contains("ConstraintViolation") ||
+                                        errorMessage.contains("referenced"))) {
+                
+                // Product is in order history - do a soft delete instead
+                System.out.println("Product is referenced in orders, performing soft delete (marking as out of stock)");
+                product.setIn_stock(false);
+                product.setQuantity(0);
+                productRepository.save(product);
+                
+                // Throw a specific exception so frontend can inform the user
+                throw new ProductException("Product marked as inactive and removed from store (preserved in order history)");
+            } else {
+                throw new ProductException("Failed to delete product: " + e.getMessage());
+            }
+        }
     }
 
     @Override
@@ -132,7 +208,88 @@ public class ProductServiceImpl implements ProductService {
         productRepository.findById(productId);
         product.setId(productId);
         return productRepository.save(product);
+    }
 
+    @Override
+    public Product updateProduct(Long productId, CreateProductRequest req) throws ProductException {
+        Product existingProduct = findProductById(productId);
+        
+        // Update basic fields
+        existingProduct.setTitle(req.getTitle());
+        existingProduct.setDescription(req.getDescription());
+        existingProduct.setBrand(req.getBrand());
+        existingProduct.setColor(req.getColor());
+        existingProduct.setMrpPrice(req.getMrpPrice());
+        existingProduct.setSellingPrice(req.getSellingPrice());
+        existingProduct.setSizes(req.getSizes());
+        existingProduct.setQuantity(req.getQuantity());
+        
+        // Recalculate discount percentage
+        int discountPercentage = calculateDiscountPercentage(req.getMrpPrice(), req.getSellingPrice());
+        existingProduct.setDiscountPercent(discountPercentage);
+        
+        // Update category if provided
+        if (req.getCategory() != null) {
+            String category1Name = req.getCategory().getName();
+            String category2Name = req.getCategory().getParentCategory() != null 
+                    ? req.getCategory().getParentCategory().getName() : null;
+            String category3Name = req.getCategory().getParentCategory() != null 
+                    && req.getCategory().getParentCategory().getParentCategory() != null
+                    ? req.getCategory().getParentCategory().getParentCategory().getName() : null;
+
+            // Create or find category hierarchy
+            Category topCategory = null;
+            if (category3Name != null && !category3Name.isEmpty()) {
+                String category3Id = category3Name.replace(" ", "_");
+                topCategory = categoryRepository.findByCategoryId(category3Id);
+                if (topCategory == null) {
+                    Category category = new Category();
+                    category.setCategoryId(category3Id);
+                    category.setLevel(1);
+                    category.setName(category3Name);
+                    topCategory = categoryRepository.save(category);
+                }
+            }
+
+            Category midCategory = null;
+            if (category2Name != null && !category2Name.isEmpty()) {
+                String category2Id = category2Name.replace(" ", "_");
+                midCategory = categoryRepository.findByCategoryId(category2Id);
+                if (midCategory == null) {
+                    Category category = new Category();
+                    category.setCategoryId(category2Id);
+                    category.setLevel(2);
+                    category.setParentCategory(topCategory);
+                    category.setName(category2Name);
+                    midCategory = categoryRepository.save(category);
+                }
+            }
+
+            Category finalCategory = null;
+            if (category1Name != null && !category1Name.isEmpty()) {
+                String category1Id = category1Name.replace(" ", "_");
+                finalCategory = categoryRepository.findByCategoryId(category1Id);
+                if (finalCategory == null) {
+                    Category category = new Category();
+                    category.setCategoryId(category1Id);
+                    category.setLevel(3);
+                    category.setParentCategory(midCategory != null ? midCategory : topCategory);
+                    category.setName(category1Name);
+                    finalCategory = categoryRepository.save(category);
+                }
+            }
+            
+            if (finalCategory != null) {
+                existingProduct.setCategory(finalCategory);
+            }
+        }
+        
+        // Update images if provided
+        if (req.getImages() != null && !req.getImages().isEmpty()) {
+            existingProduct.setImages(req.getImages());
+        }
+        
+        return productRepository.save(existingProduct);
     }
 
     @Override
@@ -231,5 +388,43 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> recentlyAddedProduct() {
         return List.of();
+    }
+    
+    // Helper method to remove product from all wishlists
+    private void removeProductFromAllWishlists(Long productId) {
+        try {
+            wishlistRepository.removeProductFromAllWishlists(productId);
+        } catch (Exception e) {
+            System.err.println("Error removing product from wishlists: " + e.getMessage());
+            // If native query fails, try alternative approach
+            try {
+                Product product = productRepository.findById(productId).orElse(null);
+                if (product != null) {
+                    List<Wishlist> wishlists = wishlistRepository.findWishlistsContainingProduct(productId);
+                    for (Wishlist wishlist : wishlists) {
+                        wishlist.getProducts().remove(product);
+                        wishlistRepository.save(wishlist);
+                    }
+                }
+            } catch (Exception fallbackError) {
+                System.err.println("Fallback wishlist cleanup also failed: " + fallbackError.getMessage());
+            }
+        }
+    }
+    
+    // Helper method to remove product from all carts
+    private void removeProductFromAllCarts(Long productId) {
+        try {
+            cartItemRepository.deleteByProductId(productId);
+        } catch (Exception e) {
+            System.err.println("Error removing product from carts: " + e.getMessage());
+            // If JPQL query fails, try alternative approach
+            try {
+                List<CartItem> cartItems = cartItemRepository.findByProductId(productId);
+                cartItemRepository.deleteAll(cartItems);
+            } catch (Exception fallbackError) {
+                System.err.println("Fallback cart cleanup also failed: " + fallbackError.getMessage());
+            }
+        }
     }
 }

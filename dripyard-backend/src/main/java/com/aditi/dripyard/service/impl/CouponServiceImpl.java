@@ -11,6 +11,7 @@ import com.aditi.dripyard.service.CouponService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,50 +34,66 @@ public class CouponServiceImpl implements CouponService {
 
 
         if (coupon==null) {
-            throw new CouponNotValidException("coupon not found");
+            throw new CouponNotValidException("Coupon not found");
         }
-        if(user.getUsedCoupons().contains(coupon)){
-            throw new CouponNotValidException("coupon already used");
+        
+        // Don't check if coupon was used before - allow reuse in same session
+        // Only check if ANOTHER coupon is currently applied to this cart
+        if (cart.getCouponCode() != null && !cart.getCouponCode().equals(code)) {
+            throw new CouponNotValidException("Remove current coupon before applying a new one");
         }
-        if(orderValue <= coupon.getMinimumOrderValue()){
-            throw new CouponNotValidException("valid for minimum order value "+coupon.getMinimumOrderValue() );
+        
+        // If same coupon is already applied, don't apply again
+        if (cart.getCouponCode() != null && cart.getCouponCode().equals(code)) {
+            throw new CouponNotValidException("This coupon is already applied");
+        }
+        
+        // Check minimum order value (should be < not <=)
+        if(orderValue < coupon.getMinimumOrderValue()){
+            throw new CouponNotValidException("Minimum order value ₹" + coupon.getMinimumOrderValue() + " required");
+        }
+        
+        // Check if coupon is active
+        if (!coupon.isActive()) {
+            throw new CouponNotValidException("Coupon is not active");
+        }
+        
+        // Check validity dates
+        LocalDate now = LocalDate.now();
+        if (coupon.getValidityStartDate() != null && now.isBefore(coupon.getValidityStartDate())) {
+            throw new CouponNotValidException("Coupon not yet valid");
+        }
+        if (coupon.getValidityEndDate() != null && now.isAfter(coupon.getValidityEndDate())) {
+            throw new CouponNotValidException("Coupon has expired");
         }
 
-        if (
-                coupon.isActive() &&
-                        LocalDate.now().isAfter(coupon.getValidityStartDate()) &&
-                        LocalDate.now().isBefore(coupon.getValidityEndDate())
-
-
-        ) {
-
-            user.getUsedCoupons().add(coupon);
-            userRepository.save(user);
-
-            double discountedPrice = Math.round((cart.getTotalSellingPrice() * coupon.getDiscountPercentage()) / 100);
-            cart.setTotalSellingPrice(cart.getTotalSellingPrice() - discountedPrice);
-            cart.setCouponCode(code);
-            cart.setCouponPrice((int) discountedPrice);
-            return cartRepository.save(cart);
-//                return cart;
-        }
-        throw new CouponNotValidException("coupon not valid...");
+        // All validations passed - apply coupon
+        double discountedPrice = Math.round((cart.getTotalSellingPrice() * coupon.getDiscountPercentage()) / 100);
+        cart.setCouponCode(code);
+        cart.setCouponPrice((int) discountedPrice);
+        
+        // Note: We don't modify totalSellingPrice here - keep original price
+        // Discount is stored separately in couponPrice
+        
+        return cartRepository.save(cart);
 
     }
 
     @Override
     public Cart removeCoupon(String code, User user) throws Exception {
-        Coupon coupon = couponRepository.findByCode(code);
-
-        if(coupon==null){
-            throw new Exception("coupon not found...");
-        }
-        user.getUsedCoupons().remove(coupon);
-
         Cart cart = cartRepository.findByUserId(user.getId());
-//        double discountedPrice = (cart.getTotalSellingPrice() * coupon.getDiscountPercentage()) / 100;
-//        cart.setTotalSellingPrice(cart.getTotalSellingPrice() + discountedPrice);
-        cart.setTotalSellingPrice(cart.getTotalSellingPrice()+cart.getCouponPrice());
+        
+        // Check if any coupon is applied
+        if(cart.getCouponCode() == null){
+            throw new Exception("No coupon applied to remove");
+        }
+        
+        // Check if the correct coupon code is being removed
+        if(!cart.getCouponCode().equals(code)){
+            throw new Exception("Coupon code does not match the applied coupon");
+        }
+
+        // Simply reset coupon fields - don't modify totalSellingPrice
         cart.setCouponCode(null);
         cart.setCouponPrice(0);
         return cartRepository.save(cart);
@@ -91,8 +108,27 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     public void deleteCoupon(Long couponId) {
-        couponRepository.deleteById(couponId);
+        // Find the coupon first
+        Coupon coupon = couponRepository.findById(couponId)
+                .orElseThrow(() -> new RuntimeException("Coupon not found with id: " + couponId));
+        
+        // Remove the coupon from all users who have used it
+        // This prevents foreign key constraint violation
+        if (!coupon.getUsedByUsers().isEmpty()) {
+            for (User user : coupon.getUsedByUsers()) {
+                user.getUsedCoupons().remove(coupon);
+            }
+            // Save all users to update the relationship
+            userRepository.saveAll(coupon.getUsedByUsers());
+            
+            // Clear the set to break the relationship from coupon side
+            coupon.getUsedByUsers().clear();
+        }
+        
+        // Now we can safely delete the coupon
+        couponRepository.delete(coupon);
     }
 
     @Override

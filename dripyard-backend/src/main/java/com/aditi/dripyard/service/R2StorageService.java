@@ -52,4 +52,13 @@ public class R2StorageService {
 
         s3Client.deleteObject(deleteRequest);
     }
+    
+    // Getter methods for debugging (remove in production)
+    public String getBucketName() {
+        return bucket;
+    }
+    
+    public S3Client getS3Client() {
+        return s3Client;
+    }
 }

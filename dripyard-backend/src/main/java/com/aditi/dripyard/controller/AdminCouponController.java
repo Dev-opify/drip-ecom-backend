@@ -8,7 +8,9 @@ import com.aditi.dripyard.service.CartService;
 import com.aditi.dripyard.service.CouponService;
 import com.aditi.dripyard.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,19 +49,39 @@ public class AdminCouponController {
     // Admin operations
 
     @PostMapping("/admin/create")
-    public ResponseEntity<Coupon> createCoupon(@RequestBody Coupon coupon) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Coupon> createCoupon(
+            @RequestBody Coupon coupon,
+            @RequestHeader("Authorization") String jwt) throws Exception {
+        
+        // Verify user is admin
+        User user = userService.findUserProfileByJwt(jwt);
+        
         Coupon createdCoupon = couponService.createCoupon(coupon);
         return ResponseEntity.ok(createdCoupon);
     }
 
     @DeleteMapping("/admin/delete/{id}")
-    public ResponseEntity<?> deleteCoupon(@PathVariable Long id) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteCoupon(
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String jwt) throws Exception {
+        
+        // Verify user is admin
+        User user = userService.findUserProfileByJwt(jwt);
+        
         couponService.deleteCoupon(id);
         return ResponseEntity.ok("Coupon deleted successfully");
     }
 
     @GetMapping("/admin/all")
-    public ResponseEntity<List<Coupon>> getAllCoupons() {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Coupon>> getAllCoupons(
+            @RequestHeader("Authorization") String jwt) throws Exception {
+        
+        // Verify user is admin
+        User user = userService.findUserProfileByJwt(jwt);
+        
         List<Coupon> coupons = couponService.getAllCoupons();
         return ResponseEntity.ok(coupons);
     }

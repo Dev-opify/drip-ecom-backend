@@ -15,6 +15,8 @@ public interface ProductService {
 
     Product updateProduct(Long productId, Product product) throws ProductException;
 
+    Product updateProduct(Long productId, CreateProductRequest req) throws ProductException;
+
     Product updateProductStock(Long productId) throws ProductException;
 
     Product findProductById(Long id) throws ProductException;
@@ -30,4 +32,5 @@ public interface ProductService {
     List<Product> getAllProducts(); // New method for admin
 
     void addImageToProduct(Long productId, String imageKey) throws ProductException;
+    void removeImageFromProduct(Long productId, String imageKey) throws ProductException;
 }

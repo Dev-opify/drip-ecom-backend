@@ -44,6 +44,11 @@ public class WishlistServiceImpl implements WishlistService {
         return wishlistRepository.save(wishlist);
     }
 
-
+    @Override
+    public Wishlist removeProductFromWishlist(User user, Product product) throws WishlistNotFoundException {
+        Wishlist wishlist = this.getWishlistByUserId(user);
+        wishlist.getProducts().remove(product);
+        return wishlistRepository.save(wishlist);
+    }
 }
 

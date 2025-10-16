@@ -32,9 +32,9 @@ public class AppConfig {
                 .authorizeHttpRequests(Authorize -> Authorize
 //                		.requestMatchers("/api/admin/**").hasAnyRole("SHOP_OWNER","ADMIN")
                                 .requestMatchers("/api/images/**").permitAll()
+                                .requestMatchers("/api/products/**").permitAll()
                                 .requestMatchers("/api/products/*/reviews").permitAll()
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                                .requestMatchers("/api/images/**").permitAll()
                                 .requestMatchers("/api/webhooks/**").permitAll()
                                 .requestMatchers("/api/payments/*/success").permitAll()
                                 .requestMatchers("/api/test/**").permitAll()
@@ -57,10 +57,17 @@ public class AppConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration cfg = new CorsConfiguration();
-                cfg.setAllowedOrigins(Arrays.asList(
-                        "http://localhost:3000",
-                        "http://127.0.0.1:5500",
-                        "https://dripyardwebsite.vercel.app"));
+                // Allow all localhost variants and production domains
+                cfg.setAllowedOriginPatterns(Arrays.asList(
+                        "http://localhost:*",
+                        "http://127.0.0.1:*",
+                        "http://192.168.*.*:*",
+                        "http://10.*.*.*:*",
+                        "http://172.16.*.*:*",
+                        "https://dripyardwebsite.vercel.app",
+                        "https://*.vercel.app",
+                        "https://*.railway.app"
+                ));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
                 cfg.setAllowedHeaders(Collections.singletonList("*"));

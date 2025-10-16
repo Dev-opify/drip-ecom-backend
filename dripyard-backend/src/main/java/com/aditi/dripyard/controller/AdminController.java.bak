@@ -53,13 +53,6 @@ public class AdminController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PutMapping("/products/{productId}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long productId, @RequestBody CreateProductRequest req, @RequestHeader("Authorization") String jwt) throws UserException, ProductException {
-        User admin = userService.findUserProfileByJwt(jwt);
-        Product product = productService.updateProduct(productId, req);
-        return new ResponseEntity<>(product, HttpStatus.OK);
-    }
-
     @PostMapping("/products/add-image")
     public ResponseEntity<ApiResponse> addImageToProduct(@RequestBody AddImageRequest request, @RequestHeader("Authorization") String jwt) throws UserException, ProductException {
         User admin = userService.findUserProfileByJwt(jwt);

@@ -54,6 +54,16 @@ public class WishlistController {
 
     }
 
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Wishlist> removeProductFromWishlist(
+            @PathVariable Long productId,
+            @RequestHeader("Authorization") String jwt) throws WishlistNotFoundException, ProductException, UserException {
+
+        Product product = productService.findProductById(productId);
+        User user = userService.findUserProfileByJwt(jwt);
+        Wishlist updatedWishlist = wishlistService.removeProductFromWishlist(user, product);
+        return ResponseEntity.ok(updatedWishlist);
+    }
 }
 
 

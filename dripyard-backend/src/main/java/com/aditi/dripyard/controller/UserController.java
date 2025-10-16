@@ -26,5 +26,46 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
     }
 
+    @PutMapping("/profile")
+    public ResponseEntity<User> updateUserProfileHandler(
+            @RequestHeader("Authorization") String jwt,
+            @RequestBody User user) throws UserException {
+        User currentUser = userService.findUserProfileByJwt(jwt);
+        currentUser.setFullName(user.getFullName());
+        currentUser.setMobile(user.getMobile());
+        // Email is not updated to avoid changing the login identifier
+        User updatedUser = userService.updateUser(currentUser);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
 
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePasswordHandler(
+            @RequestHeader("Authorization") String jwt,
+            @RequestBody PasswordChangeRequest request) throws UserException {
+        User currentUser = userService.findUserProfileByJwt(jwt);
+        userService.changePassword(currentUser, request.getCurrentPassword(), request.getNewPassword());
+        return new ResponseEntity<>("Password changed successfully", HttpStatus.OK);
+    }
+
+    // Inner class for password change request
+    public static class PasswordChangeRequest {
+        private String currentPassword;
+        private String newPassword;
+
+        public String getCurrentPassword() {
+            return currentPassword;
+        }
+
+        public void setCurrentPassword(String currentPassword) {
+            this.currentPassword = currentPassword;
+        }
+
+        public String getNewPassword() {
+            return newPassword;
+        }
+
+        public void setNewPassword(String newPassword) {
+            this.newPassword = newPassword;
+        }
+    }
 }

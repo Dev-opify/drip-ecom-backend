@@ -23,5 +23,10 @@ public interface ReviewService {
                         Long userId) throws ReviewNotFoundException, AccessDeniedException;
 
     void deleteReview(Long reviewId, Long userId) throws ReviewNotFoundException, AccessDeniedException;
+
+    // Admin methods
+    List<Review> getAllReviews();
+    
+    void deleteReviewByAdmin(Long reviewId) throws ReviewNotFoundException;
 }
 

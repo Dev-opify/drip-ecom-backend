@@ -21,13 +21,12 @@ public class Product {
 
     private String title;
     private String description;
+    private String brand;
     private int mrpPrice;
     private int sellingPrice;
     private int discountPercent;
     private int quantity;
     private String color;
-
-
     @ElementCollection
     private List<String> images = new ArrayList<>();
 
@@ -45,6 +44,17 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
+
+    @Transient
+    public Double getAverageRating() {
+        if (reviews == null || reviews.isEmpty()) {
+            return 4.5; // Default rating if no reviews
+        }
+        return reviews.stream()
+                .mapToDouble(Review::getRating)
+                .average()
+                .orElse(4.5);
+    }
 
     private boolean in_stock = true;
 }

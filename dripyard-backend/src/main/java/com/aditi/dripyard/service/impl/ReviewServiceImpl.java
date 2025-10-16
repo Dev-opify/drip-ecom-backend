@@ -68,4 +68,16 @@ public class ReviewServiceImpl implements ReviewService {
 
         reviewRepository.delete(review);
     }
+
+    @Override
+    public List<Review> getAllReviews() {
+        return reviewRepository.findAll();
+    }
+
+    @Override
+    public void deleteReviewByAdmin(Long reviewId) throws ReviewNotFoundException {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException("Review Not found"));
+        reviewRepository.delete(review);
+    }
 }

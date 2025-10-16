@@ -9,4 +9,5 @@ public class CreateCategoryRequest {
     private int level;
     private String name;
     private String categoryId;
+    private CreateCategoryRequest parentCategory;
 }

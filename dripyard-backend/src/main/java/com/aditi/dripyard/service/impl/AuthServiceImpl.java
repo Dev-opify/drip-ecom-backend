@@ -113,9 +113,22 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse signin(LoginRequest req) throws UserException {
         String username = req.getEmail();
+        String password = req.getPassword();
         String otp = req.getOtp();
 
-        Authentication authentication = authenticate(username, otp);
+        Authentication authentication;
+        
+        // Check if using OTP or password authentication
+        if (otp != null && !otp.trim().isEmpty()) {
+            // OTP-based authentication
+            authentication = authenticateWithOtp(username, otp);
+        } else if (password != null && !password.trim().isEmpty()) {
+            // Password-based authentication
+            authentication = authenticateWithPassword(username, password);
+        } else {
+            throw new UserException("Please provide either password or OTP for login");
+        }
+        
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String token = jwtProvider.generateToken(authentication);
@@ -130,7 +143,22 @@ public class AuthServiceImpl implements AuthService {
         return authResponse;
     }
 
-    private Authentication authenticate(String username, String otp) throws UserException {
+    private Authentication authenticateWithPassword(String username, String password) throws UserException {
+        UserDetails userDetails = customUserDetails.loadUserByUsername(username);
+        if (userDetails == null) {
+            throw new BadCredentialsException("Invalid username or password");
+        }
+
+        // Verify password using password encoder
+        User user = userRepository.findByEmail(username);
+        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
+            throw new UserException("Invalid username or password");
+        }
+
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
+
+    private Authentication authenticateWithOtp(String username, String otp) throws UserException {
         UserDetails userDetails = customUserDetails.loadUserByUsername(username);
         if (userDetails == null) {
             throw new BadCredentialsException("Invalid username or password");

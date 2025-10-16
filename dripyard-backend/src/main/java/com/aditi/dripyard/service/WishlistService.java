@@ -14,5 +14,6 @@ public interface WishlistService {
 
     Wishlist addProductToWishlist(User user, Product product) throws WishlistNotFoundException;
 
+    Wishlist removeProductFromWishlist(User user, Product product) throws WishlistNotFoundException;
 }
 

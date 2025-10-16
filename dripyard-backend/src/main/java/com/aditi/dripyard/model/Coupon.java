@@ -32,7 +32,7 @@ public class Coupon {
 
     private boolean isActive=true;
 
-    @ManyToMany(mappedBy = "usedCoupons")
+    @ManyToMany(mappedBy = "usedCoupons", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<User> usedByUsers=new HashSet<>();
 
 }

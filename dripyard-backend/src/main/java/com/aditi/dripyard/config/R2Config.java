@@ -7,7 +7,9 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
+import software.amazon.awssdk.http.SdkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.URI;
 
@@ -25,6 +27,9 @@ public class R2Config {
 
     @Value("${cloudflare.r2.region}")
     private String region;
+    
+    @Autowired
+    private SdkHttpClient httpClient;
 
     @Bean
     public S3Client s3Client() {
@@ -34,6 +39,7 @@ public class R2Config {
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
                 .endpointOverride(URI.create(endpoint))
                 .region(Region.of(region)) // e.g., "auto" or "us-east-1"
+                .httpClient(httpClient) // Use configured HTTP client with better network settings
                 .serviceConfiguration(
                         S3Configuration.builder()
                                 .pathStyleAccessEnabled(true)

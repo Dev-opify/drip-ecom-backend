@@ -51,4 +51,32 @@ public class UserServiceImplementation implements UserService {
 		}
 		throw new UserException("User does not exist with username " + username);
 	}
+
+	@Override
+	public java.util.List<User> getAllUsers() {
+		return userRepository.findAll();
+	}
+
+	@Override
+	public void deleteUser(Long userId) throws UserException {
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserException("User not found with id " + userId));
+		userRepository.delete(user);
+	}
+
+	@Override
+	public User updateUser(User user) throws UserException {
+		return userRepository.save(user);
+	}
+
+	@Override
+	public void changePassword(User user, String currentPassword, String newPassword) throws UserException {
+		// Verify current password
+		if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+			throw new UserException("Current password is incorrect");
+		}
+		
+		// Update to new password
+		user.setPassword(passwordEncoder.encode(newPassword));
+		userRepository.save(user);
+	}
 }
