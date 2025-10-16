@@ -8,22 +8,28 @@ ENV PORT=${PORT:-8080}
 
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml first for better layer caching
+# Copy pre-built jar file if it exists, otherwise build from source
+COPY dripyard-backend/target/dripyard-backend-0.0.1-SNAPSHOT.jar ./app.jar 2>/dev/null || echo "No pre-built jar found, will build from source"
+
+# Only copy source and build if jar doesn't exist
 COPY dripyard-backend/.mvn/ .mvn/
 COPY dripyard-backend/mvnw dripyard-backend/mvnw.cmd ./
 COPY dripyard-backend/pom.xml ./
-
-# Make mvnw executable
 RUN chmod +x mvnw
 
-# Download dependencies (this layer will be cached if pom.xml doesn't change)
-RUN ./mvnw dependency:go-offline -B
+# Try to use pre-built jar, otherwise build
+RUN if [ ! -f "app.jar" ]; then \
+      echo "Building from source..."; \
+      ./mvnw dependency:go-offline -B; \
+    fi
 
-# Copy source code
 COPY dripyard-backend/src ./src
 
-# Build the application
-RUN ./mvnw clean package -DskipTests -B
+RUN if [ ! -f "app.jar" ]; then \
+      echo "Compiling application..."; \
+      ./mvnw clean package -DskipTests -B && \
+      cp target/dripyard-backend-0.0.1-SNAPSHOT.jar app.jar; \
+    fi
 
 EXPOSE $PORT
 
@@ -34,4 +40,4 @@ HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
 # Add JVM options for containerized environment
 ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+UseG1GC"
 
-CMD java $JAVA_OPTS -Dserver.port=$PORT -jar target/dripyard-backend-0.0.1-SNAPSHOT.jar
+CMD java $JAVA_OPTS -Dserver.port=$PORT -jar app.jar
